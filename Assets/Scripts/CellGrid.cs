@@ -368,4 +368,34 @@ public class CellGrid : MonoBehaviour
 		path.Reverse();
 		return path;
 	}
+
+	public List<Cell> RandomUpWalk(Cell startCell, Cell endCell)
+	{
+		// List path
+		List<Cell> path = new List<Cell>
+		{
+			startCell
+		};
+		Cell currentCell = startCell;
+		while (currentCell != endCell)
+		{
+			List<Cell> possibleCells = new List<Cell>
+			{
+				// neighbors  0, 1 and 5
+				currentCell.neighbors[0],
+				currentCell.neighbors[1],
+				currentCell.neighbors[5]
+			};
+			// remove nulls
+			possibleCells.RemoveAll(cell => cell == null);
+
+			// choose one random
+			int index = Random.Range(0, possibleCells.Count);
+			currentCell = possibleCells[index];
+			path.Add(currentCell);
+
+		}
+		return path;
+	}
+
 }
