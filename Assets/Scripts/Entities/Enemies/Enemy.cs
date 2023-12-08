@@ -1,13 +1,21 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class Enemy : Entity
 {
 	public static List<Cell> alreadyTargetedCells = new List<Cell>();
+
 	protected Cell NextAttackCell;
 
 	public Enemy() : base()
 	{
 		Type = EntityType.Enemy;
+	}
+
+	public override void SetNextMoveCell(Cell cell)
+	{
+		base.SetNextMoveCell(cell);
+		alreadyTargetedCells.Add(cell);
 	}
 
 	public override List<Cell> GetMoveableCells()
@@ -23,10 +31,23 @@ public abstract class Enemy : Entity
 		return moveableCells;
 	}
 
-	public override void SetNextMove(Cell cell)
+	public virtual void FindNextMove(Cell playerCell)
 	{
-		base.SetNextMove(cell);
-		alreadyTargetedCells.Add(cell);
+		List<Cell> path = CellGrid.FindPath(currentCell, playerCell, true);
+		if (path.Count > 0 && !alreadyTargetedCells.Contains(path[0]))
+		{
+			SetNextMoveCell(path[0]);
+		}
+		else
+		{
+			List<Cell> moveableCells = GetMoveableCells();
+			if (moveableCells.Count == 0)
+			{
+				SetNextMoveCell(null);
+				return;
+			}
+			SetNextMoveCell(moveableCells[Random.Range(0, moveableCells.Count)]);
+		}
 	}
 
 	public abstract void UpdateNextAttack();

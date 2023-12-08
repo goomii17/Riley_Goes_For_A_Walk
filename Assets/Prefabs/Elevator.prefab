@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4989475761271818700}
   - component: {fileID: 9100174143457793008}
-  - component: {fileID: 842118847922570321}
   - component: {fileID: -242289900498571027}
   m_Layer: 0
   m_Name: Elevator
@@ -46,20 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57c453e68e689bb43be369d07ff9ba7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &842118847922570321
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 302622155585683149}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c86d1a16b11bdb4396cedc7e463b6ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IdleSprites:
-  - {fileID: 21300000, guid: eb170754f4aa1424096b4147b3400f66, type: 3}
 --- !u!212 &-242289900498571027
 SpriteRenderer:
   m_ObjectHideFlags: 0

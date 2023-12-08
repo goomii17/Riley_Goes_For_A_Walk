@@ -10,30 +10,15 @@ public class Cell : MonoBehaviour
 	// Neighbors of the cell
 	public Cell[] neighbors;
 
-	// Base of the cell
-	public Tile tile;
-
 	// Content of the cell
-	public Entity content;
-
-	void OnMouseDown()
-	{
-		var disNuts = this;
-		GameManager.Instance.OnCellClicked(disNuts);
-	}
+	public Tile tile { get; private set; }
+	public Structure structure { get; private set; }
+	public Entity entity { get; private set; }
 
 	public void SetCoordinates(int x, int y)
 	{
-		// Set the coordinates of the cell
 		this.x = x;
 		this.y = y;
-	}
-
-
-	public bool IsEmptyFloor()
-	{
-		if (tile.Type == TileType.Floor && content == null) return true;
-		return false;
 	}
 
 	public List<Cell> GetNeighbors()
@@ -49,51 +34,76 @@ public class Cell : MonoBehaviour
 		return neighbors;
 	}
 
-	public void KillContent()
-	{
-		if (content == null)
-		{
-			Debug.Log("ERROR: Trying to kill null content");
-			return;
-		}
-		// Kill the content of the cell
-		content.AutoDestroy();
-		UnSetContent();
-	}
-
-	public void UnSetContent()
-	{
-		// Unset the content of the cell
-		content = null;
-	}
-
-	public void SetContent(Entity entity)
-	{
-		// Set the content of the cell
-		content = entity;
-		// Set entity's current cell
-		entity.SetCurrentCell(this);
-	}
-
 	public void SetTile(Tile tile)
 	{
-		// Set the tile of the cell
 		this.tile = tile;
-
-		// Set tiles parent
-		tile.SetCurrentCell(this);
+		tile.SetParentCell(this);
 	}
 
-	public void HighlightCell(Color color)
+	public TileType GetTileType()
 	{
-		// Highlight the cell or change sprite in content
-		tile.HighlightTile(color);
+		return tile == null ? TileType.None : tile.Type;
 	}
 
-	public void UnHighlightCell()
+	public void SetStructure(Structure structure)
 	{
-		// Unhighlight the cell or change sprite in content
-		tile.UnHighlightTile();
+		this.structure = structure;
+		structure.SetParentCell(this);
+		structure.PositionIn3D();
+	}
+
+	public StructureType GetStructureType()
+	{
+		return structure == null ? StructureType.None : structure.Type;
+	}
+
+	public void SetEntity(Entity entity)
+	{
+		this.entity = entity;
+		entity.SetCurrentCell(this);
+		entity.PositionIn3D();
+	}
+
+	public void UnSetEntity()
+	{
+		entity = null;
+	}
+
+	public EntityType GetEntityType()
+	{
+		return entity == null ? EntityType.None : entity.Type;
+	}
+
+	public void KillEntity()
+	{
+		if (entity == null)
+		{
+			Debug.Log("ERROR: Trying to kill null entity");
+			return;
+		}
+		Destroy(entity.gameObject);
+		UnSetEntity();
+	}
+
+	public bool IsEmptyFloor()
+	{
+		return GetTileType() == TileType.Floor && entity == null && structure == null;
+	}
+
+	public void Highlight(Color color)
+	{
+		tile.Highlight(color);
+	}
+
+	public void UnHighlight()
+	{
+		tile.UnHighlight();
+	}
+
+	void OnMouseDown()
+	{
+		var disNuts = this;
+		GameManager.Instance.OnCellClicked(disNuts);
 	}
 
 }

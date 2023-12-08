@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class Player : Entity
 {
@@ -21,8 +20,6 @@ public class Player : Entity
 
 		var dx = nextCell.x - currentCell.x;
 		var dy = nextCell.y - currentCell.y;
-
-		Debug.Log("DX: " + dx + " DY: " + dy);
 
 		if (dy > 0)
 		{
@@ -83,21 +80,18 @@ public class Player : Entity
 
 	public bool ValidMeleeCell(Cell cell)
 	{
-		return cell != null && cell.content != null && cell.content.Type == EntityType.Enemy;
+		return cell != null && cell.GetEntityType() == EntityType.Enemy;
 	}
 
 	public bool ValidFrontalCell(Cell cell, int neighborIndex)
 	{
-		Debug.Log("Validating frontal cell: " + cell + " with neighbor index " + neighborIndex);
 		bool validEmpty = cell != null && cell.IsEmptyFloor();
 		if (!validEmpty)
 		{
-			Debug.Log("Middle cell is not empty");
 			return false;
 		}
 		Cell frontalCell = cell.neighbors[neighborIndex];
-		Debug.Log("Frontal cell is " + frontalCell);
-		return frontalCell != null && frontalCell.content != null && frontalCell.content.Type == EntityType.Enemy;
+		return frontalCell != null && frontalCell.GetEntityType() == EntityType.Enemy;
 	}
 
 	public List<Cell> GetNextKillsCells()

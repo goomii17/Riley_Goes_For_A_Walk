@@ -4,24 +4,19 @@ public enum TileType
 {
 	Floor,
 	Void,
+	None
 }
 
 public abstract class Tile : MonoBehaviour
 {
-	public TileType Type { get; set; }
+	public TileType Type { get; protected set; }
 
-
-	public abstract void HighlightTile(Color color);
-	public abstract void UnHighlightTile();
-
-	public void AutoDestroy()
-	{
-		Destroy(gameObject);
-	}
-
-	public void SetCurrentCell(Cell cell)
+	public void SetParentCell(Cell cell)
 	{
 		transform.SetParent(cell.gameObject.transform, false);
 	}
+
+	public abstract void Highlight(Color color);
+	public abstract void UnHighlight();
 
 }
