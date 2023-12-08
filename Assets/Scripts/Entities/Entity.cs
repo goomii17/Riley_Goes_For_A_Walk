@@ -5,30 +5,27 @@ public enum EntityType
 {
 	Player,
 	Enemy,
-	Elevator,
+	None
 }
 
 public abstract class Entity : MonoBehaviour
 {
 
-	private EntityAnimator animator;
+	public EntityType Type { get; protected set; }
 
-	public void Awake()
-	{
-		animator = GetComponent<EntityAnimator>();
-	}
+	private EntityAnimator animator;
 
 	protected Cell currentCell;
 	protected Cell nextMoveCell;
 
-	public EntityType Type { get; protected set; }
-
-	public void AutoDestroy()
+	public void Awake()
 	{
-		Destroy(gameObject);
+		animator = GetComponent<EntityAnimator>();
+		// sprite renderer cast shadow
+		GetComponent<SpriteRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
 	}
 
-	public void ResetTransform()
+	public void PositionIn3D()
 	{
 		Vector3 startPosition = Vector3.up * 4.6f - Vector3.forward * 3.8f;
 		Quaternion startRotation = Quaternion.Euler(-15, 0, 0);
@@ -38,7 +35,6 @@ public abstract class Entity : MonoBehaviour
 	public void SetCurrentCell(Cell cell)
 	{
 		transform.SetParent(cell.gameObject.transform, false);
-		ResetTransform();
 		currentCell = cell;
 	}
 
@@ -52,21 +48,9 @@ public abstract class Entity : MonoBehaviour
 		animator.AnimateIdle();
 	}
 
-	public virtual void SetNextMove(Cell cell)
+	public virtual void SetNextMoveCell(Cell cell)
 	{
 		nextMoveCell = cell;
-	}
-
-	public virtual void FindNextMove()
-	{
-		List<Cell> moveableCells = GetMoveableCells();
-		if (moveableCells.Count == 0)
-		{
-			SetNextMove(null);
-			return;
-		}
-		Cell targetCell = moveableCells[Random.Range(0, moveableCells.Count)];
-		SetNextMove(targetCell);
 	}
 
 	public bool AnimateMove()
@@ -82,10 +66,10 @@ public abstract class Entity : MonoBehaviour
 
 	public void MakeMove()
 	{
-		if (nextMoveCell != null)
+		if (nextMoveCell != null && nextMoveCell != currentCell)
 		{
-			currentCell.UnSetContent();
-			nextMoveCell.SetContent(this);
+			currentCell.UnSetEntity();
+			nextMoveCell.SetEntity(this);
 		}
 	}
 

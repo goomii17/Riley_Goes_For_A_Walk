@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CellGrid : MonoBehaviour
 {
-	// Cell prefab
+	[Header("Prefabs")]
 	public GameObject cellPrefab;
 	public GameObject voidPrefab;
 	public GameObject floorPrefab;
@@ -18,6 +18,10 @@ public class CellGrid : MonoBehaviour
 	// Player and enemies
 	public Player player;
 	public List<Enemy> enemies = new List<Enemy>();
+
+	// Highlighted cells
+	public List<Cell> highlightedPathCells = new List<Cell>();
+	public List<Cell> highlightedAttackCells = new List<Cell>();
 
 	public void Awake()
 	{
@@ -35,6 +39,31 @@ public class CellGrid : MonoBehaviour
 		return i >= 0 && i < GameParams.MATRIX_HEIGHT && j >= start && j < end;
 	}
 
+	public List<Cell> GetCells()
+	{
+		List<Cell> cells = new List<Cell>();
+		foreach (Transform child in transform)
+		{
+			cells.Add(child.GetComponent<Cell>());
+		}
+		return cells;
+	}
+
+	public void UnHighLightAllCells()
+	{
+		foreach (Cell cell in highlightedPathCells)
+		{
+			cell.UnHighlight();
+
+		}
+		highlightedPathCells.Clear();
+		foreach (Cell cell in highlightedAttackCells)
+		{
+			cell.UnHighlight();
+		}
+		highlightedAttackCells.Clear();
+	}
+
 	public void DestroyChildren()
 	{
 		foreach (Transform child in transform)
@@ -44,7 +73,7 @@ public class CellGrid : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Initialize grid, instantiate all cells and add them to the grid.
+	/// Initialize grid, instantiate all cells and assign them to the grid.
 	/// </summary>
 	private void InitGrid()
 	{
@@ -94,22 +123,28 @@ public class CellGrid : MonoBehaviour
 		}
 	}
 
-	private void PutEntityOnCell(Cell cell, GameObject entityPrefab)
-	{
-		GameObject entityObject = Instantiate(entityPrefab, Vector3.zero, Quaternion.identity);
-		Entity entity = entityObject.GetComponent<Entity>();
-		entity.ResetTransform();
-		cell.SetContent(entity);
-	}
-
-	private void PutTileOnCell(Cell cell, GameObject tilePrefab)
+	private static void PutTileOnCell(Cell cell, GameObject tilePrefab)
 	{
 		GameObject tileObject = Instantiate(tilePrefab, Vector3.zero, Quaternion.identity);
 		cell.SetTile(tileObject.GetComponent<Tile>());
 	}
 
+	private static void PutStructureOnCell(Cell cell, GameObject structurePrefab)
+	{
+		GameObject structureObject = Instantiate(structurePrefab, Vector3.zero, Quaternion.identity);
+		Structure structure = structureObject.GetComponent<Structure>();
+		cell.SetStructure(structure);
+	}
+
+	private static void PutEntityOnCell(Cell cell, GameObject entityPrefab)
+	{
+		GameObject entityObject = Instantiate(entityPrefab, Vector3.zero, Quaternion.identity);
+		Entity entity = entityObject.GetComponent<Entity>();
+		cell.SetEntity(entity);
+	}
+
 	/// <summary>
-	/// Fills the grid with player, enemies, elevator, floor and void.
+	/// Procedurally generate levels.
 	/// </summary>
 	/// <param name="level"></param>
 	public void FillGrid(int level = 1)
@@ -117,11 +152,11 @@ public class CellGrid : MonoBehaviour
 		// Put player on the grid
 		Cell playerCell = grid[1, 4].GetComponent<Cell>();
 		PutEntityOnCell(playerCell, playerPrefab);
-		player = playerCell.content as Player;
+		player = playerCell.entity as Player;
 
 		// Put elevator on the grid
 		Cell elevatorCell = grid[9, 4].GetComponent<Cell>();
-		PutEntityOnCell(elevatorCell, elevatorPrefab);
+		PutStructureOnCell(elevatorCell, elevatorPrefab);
 
 		// List of banned cells for placing enemies and voids
 		List<Cell> protectedCells = new List<Cell>(){
@@ -147,7 +182,7 @@ public class CellGrid : MonoBehaviour
 			int end = Mathf.Min(GameParams.GRID_WIDTH + i, GameParams.MATRIX_WIDTH);
 			int j = Random.Range(start, end);
 			Cell cell = grid[i, j].GetComponent<Cell>();
-			if (cell.content == null && !protectedCells.Contains(cell))
+			if (cell.entity == null && !protectedCells.Contains(cell))
 			{
 				voidCells.Add(cell);
 				protectedCells.Add(cell);
@@ -207,10 +242,10 @@ public class CellGrid : MonoBehaviour
 		// Put incubator on the grid
 		// not implemented yet
 		// Put enemies on the grid
-		for (int i = 0; i < 0; i++)
+		for (int i = 0; i < 6; i++)
 		{
 			PutEntityOnCell(remainingCells[i], enemyPrefabs[0]);
-			enemies.Add(remainingCells[i].content as Enemy);
+			enemies.Add(remainingCells[i].entity as Enemy);
 		}
 
 		// Fill the grid with floor
@@ -243,46 +278,27 @@ public class CellGrid : MonoBehaviour
 		{
 			Cell cell = child.GetComponent<Cell>();
 
-			if (cell.content != null)
+			foreach (Transform grandChild in child)
 			{
-				cell.content.AutoDestroy();
-				cell.content = null;
-			}
-			if (cell.tile != null)
-			{
-				cell.tile.AutoDestroy();
-				cell.tile = null;
+				Destroy(grandChild.gameObject);
 			}
 		}
 		player = null;
 		enemies.Clear();
 	}
 
-	public List<Cell> GetCells()
-	{
-		List<Cell> cells = new List<Cell>();
-		foreach (Transform child in transform)
-		{
-			cells.Add(child.GetComponent<Cell>());
-		}
-		return cells;
-	}
-
 	/// <summary>
-	/// Finds the path from startCell to endCell.
+	/// Finds the shortest path from startCell to endCell using BFS. Makes use of a Queue to make it more efficient.
 	/// </summary>
-	/// <param name="startCell"></param>
-	/// <param name="endCell"></param>
-	public List<Cell> FindPath(Cell startCell, Cell endCell)
+	public static List<Cell> FindPath(Cell startCell, Cell endCell, bool adjacentTarget)
 	{
 		// List of cells to visit
-		Debug.Log("Finding path from " + startCell + " to " + endCell);
-		List<Cell> openCells = new List<Cell>();
+		Queue<Cell> openCells = new Queue<Cell>();
 		foreach (Cell neighbor in startCell.GetNeighbors())
 		{
-			if (neighbor.tile.Type == TileType.Floor && neighbor.content == null)
+			if (neighbor.IsEmptyFloor())
 			{
-				openCells.Add(neighbor);
+				openCells.Enqueue(neighbor);
 			}
 		}
 
@@ -299,35 +315,29 @@ public class CellGrid : MonoBehaviour
 			parents.Add(cell, startCell);
 		}
 
+		// BFS
 		while (openCells.Count > 0)
 		{
-			Cell currentCell = openCells[0];
-			openCells.RemoveAt(0);
+			Cell currentCell = openCells.Dequeue();
 			closedCells.Add(currentCell);
 
 			if (currentCell == endCell)
 			{
-				// Path found
-				List<Cell> path = new List<Cell>();
-				Cell current = endCell;
-				while (current != startCell)
-				{
-					path.Add(current);
-					current = parents[current];
-				}
-				path.Reverse();
-				return path;
+				return RecreatePath(startCell, endCell, parents);
+			}
+			else if (adjacentTarget && endCell.GetNeighbors().Contains(currentCell))
+			{
+				return RecreatePath(startCell, currentCell, parents);
 			}
 
 			foreach (Cell neighbor in currentCell.GetNeighbors())
 			{
 				if (!closedCells.Contains(neighbor) && !openCells.Contains(neighbor))
 				{
-					if (neighbor.tile.Type == TileType.Floor && neighbor.content == null)
+					if (neighbor.IsEmptyFloor())
 					{
-						openCells.Add(neighbor);
+						openCells.Enqueue(neighbor);
 						parents.Add(neighbor, currentCell);
-
 					}
 				}
 			}
@@ -336,4 +346,17 @@ public class CellGrid : MonoBehaviour
 		return new List<Cell>();
 	}
 
+	private static List<Cell> RecreatePath(Cell startCell, Cell endCell, Dictionary<Cell, Cell> parents)
+	{
+		// Path found
+		List<Cell> path = new List<Cell>();
+		Cell current = endCell;
+		while (current != startCell)
+		{
+			path.Add(current);
+			current = parents[current];
+		}
+		path.Reverse();
+		return path;
+	}
 }

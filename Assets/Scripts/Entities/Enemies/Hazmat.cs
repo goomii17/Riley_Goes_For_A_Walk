@@ -7,7 +7,7 @@ public class Hazmat : Enemy
 	{
 		foreach (Cell cell in GetAttackableCells())
 		{
-			if (cell.content != null && cell.content.Type == EntityType.Player)
+			if (cell.GetEntityType() == EntityType.Player)
 			{
 				NextAttackCell = cell;
 				return;
@@ -29,8 +29,7 @@ public class Hazmat : Enemy
 
 	public override bool AttackPlayer()
 	{
-		if (NextAttackCell == null) return false;
-		return true;
+		return NextAttackCell != null;
 	}
 
 	public override List<Cell> GetAttackableCells()
@@ -39,7 +38,7 @@ public class Hazmat : Enemy
 		List<Cell> attackableCells = new List<Cell>();
 		foreach (Cell cell in currentCell.GetNeighbors())
 		{
-			if (cell.content == null || cell.content.Type == EntityType.Player)
+			if (cell.entity == null || cell.entity.Type == EntityType.Player)
 			{
 				attackableCells.Add(cell);
 			}

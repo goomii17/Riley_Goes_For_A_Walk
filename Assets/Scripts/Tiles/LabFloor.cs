@@ -15,12 +15,12 @@ public class LabFloor : Tile
 		Type = TileType.Floor;
 	}
 
-	public override void HighlightTile(Color color)
+	public override void Highlight(Color color)
 	{
 		spriteRenderer.color = color;
 	}
 
-	public override void UnHighlightTile()
+	public override void UnHighlight()
 	{
 		spriteRenderer.color = Color.white;
 	}

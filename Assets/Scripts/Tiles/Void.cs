@@ -7,12 +7,12 @@ public class Void : Tile
 		Type = TileType.Void;
 	}
 
-	public override void HighlightTile(Color _)
+	public override void Highlight(Color _)
 	{
 		// Do nothing
 	}
 
-	public override void UnHighlightTile()
+	public override void UnHighlight()
 	{
 		// Do nothing
 	}

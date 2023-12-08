@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2911074849607641231}
   - component: {fileID: 3217590478779101413}
   - component: {fileID: 9211259248712855886}
-  - component: {fileID: -8226832956537388769}
+  - component: {fileID: 3219104363760349033}
   m_Layer: 0
   m_Name: Hazmat
   m_TagString: Untagged
@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2563d2865cb8fec478be1f558176cdec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-8226832956537388769
+--- !u!114 &3219104363760349033
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,9 +107,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8270151079411219810}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c86d1a16b11bdb4396cedc7e463b6ff, type: 3}
+  m_Script: {fileID: 11500000, guid: ebfd94914fe350b4481d183bea254169, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   IdleSprites:
   - {fileID: 21300000, guid: 7fc61b0bd06e2ba42913856e400e1d26, type: 3}
   - {fileID: 21300000, guid: 4b1d8eb085fd99b4c924641cfbe93799, type: 3}
+  MoveSprites: []
