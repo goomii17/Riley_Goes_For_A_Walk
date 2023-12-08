@@ -20,9 +20,10 @@ public class GameManager : MonoBehaviour
 	// Menu canvas
 	public GameObject menuCanvas;
 
+	private GameState gameState;
+
 	[SerializeField] private GameInfo gameInfo;
 
-	public GameState gameState;
 
 	public CellGrid cellGrid;
 
@@ -59,7 +60,7 @@ public class GameManager : MonoBehaviour
 			case GameState.PlayerTurn:
 				// Play Idle animations
 				AnimateIdleEntities();
-				HandlePlayerInstruction();
+				HandlePlayerClick();
 				break;
 			case GameState.AnimateAndMovePlayer:
 				if (cellGrid.player.AnimateMove())
@@ -152,7 +153,7 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	public void ResetGame()
+	private void ResetGame()
 	{
 		gameInfo.ResetGameInfo();
 		cellGrid.ResetGrid();
@@ -182,7 +183,7 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	private void UnHighLightAll()
+	private void UnHighLightAllCells()
 	{
 		foreach (Cell cell in highlightedPathCells)
 		{
@@ -198,34 +199,49 @@ public class GameManager : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Highlights cells based on click.
 	/// Transitions to AnimateAndMovePlayer GameState if player makes a valid move.
-	/// We can click on: Void, Floor, Enemy, Player, Elevator
+	/// Highlights cells based on click.
+	/// We can click on: Void, Floor, Enemy, Player, Elevator or Incubator
 	/// </summary>
-	public void HandlePlayerInstruction()
+	private void HandlePlayerClick()
 	{
 		// No click
 		if (targetCell == null)
 		{
+			// If elevator is focused, there are no enemies and there is a path to the elevator
+			if (focusedCell != null && focusedCell.content != null && focusedCell.content.Type == EntityType.Elevator)
+			{
+				if (cellGrid.enemies.Count == 0)//&& highlightedPathCells.Count > 0)
+				{
+					// Move player
+					cellGrid.player.SetNextMove(focusedCell);
+					cellGrid.player.UpdateNextKills(focusedCell);
+
+					// Unhighlight previous cell
+					//highlightedPathCells[0].UnHighlightCell();
+					//highlightedPathCells.RemoveAt(0);
+
+					gameState = GameState.AnimateAndMovePlayer;
+				}
+			}
 			return;
 		}
 
 		// Click on highlightedPathCell
 		if (highlightedPathCells.Contains(targetCell))
 		{
-			Debug.Log("Clicked on highlightedPathCell");
 			// Move player
 			cellGrid.player.SetNextMove(highlightedPathCells[0]);
 			cellGrid.player.UpdateNextKills(highlightedPathCells[0]);
-			gameState = GameState.AnimateAndMovePlayer;
-			UnHighLightAll();
+			UnHighLightAllCells();
 			focusedCell = null;
 			targetCell = null;
+			gameState = GameState.AnimateAndMovePlayer;
 			return;
 		}
 
-		// Unfocus cell and all highlighted cells
-		UnHighLightAll();
+		// Unfocus all highlighted cells
+		UnHighLightAllCells();
 
 		// Click same cell or void
 		if (targetCell == focusedCell || targetCell.tile.Type == TileType.Void)
@@ -235,20 +251,14 @@ public class GameManager : MonoBehaviour
 			return;
 		}
 
-		// Click on floor
-		if (targetCell.content == null)
+		// Click on empty floor
+		if (targetCell.IsEmptyFloor())
 		{
-			Debug.Log("Floor clicked");
 			HandleClickOnFloor();
 		}
-		else if (targetCell.content.Type == EntityType.Elevator)
-		{
-			Debug.Log("Elevator clicked");
-		}
-		// Click on enemy or player
+		// Click on entity
 		else
 		{
-			Debug.Log("Entity clicked");
 			HandleClickOnEntity();
 		}
 	}
@@ -272,34 +282,32 @@ public class GameManager : MonoBehaviour
 			// Focus new cell
 			focusedCell = targetCell;
 			targetCell = null;
-			return;
 		}
-
 		// Click with focus ON Player
-		Player player = (Player)focusedCell.content;
-
-		bool validMove = player.GetMoveableCells().Contains(targetCell);
-		if (validMove)
-		{
-			Debug.Log("Player updating next move");
-			player.SetNextMove(targetCell);
-			player.UpdateNextKills(targetCell);
-			gameState = GameState.AnimateAndMovePlayer;
-		}
 		else
 		{
-			Debug.Log("Player could not move to cell");
+			Player player = (Player)focusedCell.content;
+
+			// Make move if valid and exit PlayerTurn
+			bool validMove = player.GetMoveableCells().Contains(targetCell);
+			if (validMove)
+			{
+				player.SetNextMove(targetCell);
+				player.UpdateNextKills(targetCell);
+				gameState = GameState.AnimateAndMovePlayer;
+			}
+
+			focusedCell = null;
+			targetCell = null;
 		}
-		focusedCell = null;
-		targetCell = null;
 	}
 
 	public void HandleClickOnEntity()
 	{
-		Debug.Log("Clicked on type: " + targetCell.content.Type);
-		// Show enemy attacks
+		// Click on enemy
 		if (targetCell.content.Type == EntityType.Enemy)
 		{
+			// Highlight Attackable cells
 			Enemy enemy = (Enemy)targetCell.content;
 			foreach (Cell cell in enemy.GetAttackableCells())
 			{
@@ -309,10 +317,25 @@ public class GameManager : MonoBehaviour
 		}
 		else if (targetCell.content.Type == EntityType.Player)
 		{
+			// Highlight Moveable/Attackable cells
 			foreach (Cell cell in targetCell.content.GetMoveableCells())
 			{
 				cell.HighlightCell(Color.yellow);
 				highlightedAttackCells.Add(cell);
+			}
+		}
+		// Click on elevator or incubator
+		else
+		{
+			Debug.Log("Click on elevator or incubator");
+			// Highlight path to target cell
+			List<Cell> path = cellGrid.FindPath(cellGrid.player.GetCurrentCell(), targetCell);
+			Debug.Log("Path length: " + path.Count);
+			foreach (Cell cell in path)
+			{
+				// Light blue
+				cell.HighlightCell(Color.cyan);
+				highlightedPathCells.Add(cell);
 			}
 		}
 

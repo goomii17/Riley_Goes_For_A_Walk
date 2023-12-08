@@ -155,8 +155,6 @@ public class CellGrid : MonoBehaviour
 			}
 		}
 
-		Debug.Log("Void cells length: " + voidCells.Count + "");
-
 		// We add 7 more cells near those 3 void cells
 		for (int i = 0; i < 7; i++)
 		{
@@ -181,12 +179,9 @@ public class CellGrid : MonoBehaviour
 			}
 		}
 
-		Debug.Log("Void cells length: " + voidCells.Count + "");
-
 		// Create the voids
 		foreach (Cell cell in voidCells)
 		{
-			Debug.Log("Adding void cell " + cell);
 			PutTileOnCell(cell, voidPrefab);
 		}
 
@@ -212,7 +207,7 @@ public class CellGrid : MonoBehaviour
 		// Put incubator on the grid
 		// not implemented yet
 		// Put enemies on the grid
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 0; i++)
 		{
 			PutEntityOnCell(remainingCells[i], enemyPrefabs[0]);
 			enemies.Add(remainingCells[i].content as Enemy);
