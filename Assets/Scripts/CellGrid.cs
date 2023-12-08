@@ -136,6 +136,16 @@ public class CellGrid : MonoBehaviour
 		};
 
 		// Random walk to elevator || findPath -> banned cells
+		Cell upperCell = grid[10, 4].GetComponent<Cell>();
+		List<Cell> path = RandomUpWalk(playerCell, upperCell);
+		foreach (Cell cell in path)
+		{
+			if (cell != playerCell && cell != upperCell)
+			{
+				protectedCells.Add(cell);
+			}
+		}
+
 
 		// We choose 3 random cells to start the void
 		List<Cell> voidCells = new List<Cell>();
@@ -231,7 +241,6 @@ public class CellGrid : MonoBehaviour
 
 			}
 		}
-
 	}
 
 	/// <summary>
@@ -323,7 +332,7 @@ public class CellGrid : MonoBehaviour
 			{
 				if (!closedCells.Contains(neighbor) && !openCells.Contains(neighbor))
 				{
-					if (neighbor.tile.Type == TileType.Floor && neighbor.content == null)
+					if (neighbor.tile.Type == TileType.Floor)
 					{
 						openCells.Add(neighbor);
 						parents.Add(neighbor, currentCell);
@@ -334,6 +343,34 @@ public class CellGrid : MonoBehaviour
 		}
 		// No path found
 		return new List<Cell>();
+	}
+
+	/// <summary>
+	/// Finds a random walk that just goes up (3 directions), from startCell to endCell.
+	/// </summary>
+	public List<Cell> RandomUpWalk(Cell startCell, Cell endCell)
+	{
+		// List path
+		List<Cell> path = new List<Cell>();
+		path.Add(startCell);
+		Cell currentCell = startCell;
+		while (currentCell != endCell)
+		{
+			List<Cell> possibleCells = new List<Cell>();
+			// neighbors  0, 1 and 5
+			possibleCells.Add(currentCell.neighbors[0]);
+			possibleCells.Add(currentCell.neighbors[1]);
+			possibleCells.Add(currentCell.neighbors[5]);
+			// remove nulls
+			possibleCells.RemoveAll(cell => cell == null);
+
+			// choose one random
+			int index = Random.Range(0, possibleCells.Count);
+			currentCell = possibleCells[index];
+			path.Add(currentCell);
+
+		}
+		return path;
 	}
 
 }

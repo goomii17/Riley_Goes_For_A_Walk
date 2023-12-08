@@ -59,13 +59,18 @@ public abstract class Entity : MonoBehaviour
 
 	public virtual void FindNextMove()
 	{
-		List<Cell> moveableCells = GetMoveableCells();
-		if (moveableCells.Count == 0)
-		{
-			SetNextMove(null);
-			return;
-		}
-		Cell targetCell = moveableCells[Random.Range(0, moveableCells.Count)];
+		// List<Cell> moveableCells = GetMoveableCells();
+		// if (moveableCells.Count == 0)
+		// {
+		// 	SetNextMove(null);
+		// 	return;
+		// }
+		// Cell targetCell = moveableCells[Random.Range(0, moveableCells.Count)];
+
+		// CellGrid findPath:
+		Cell playerCell = GameManager.Instance.cellGrid.player.GetCurrentCell();
+		List<Cell> path = GameManager.Instance.cellGrid.FindPath(currentCell, playerCell);
+		Cell targetCell = path[0];
 		SetNextMove(targetCell);
 	}
 
