@@ -13,7 +13,7 @@ public abstract class Entity : MonoBehaviour
 
 	public EntityType Type { get; protected set; }
 
-	private EntityAnimator animator;
+	protected EntityAnimator animator;
 
 	protected Cell currentCell;
 	protected Cell nextMoveCell;
@@ -22,7 +22,7 @@ public abstract class Entity : MonoBehaviour
 	{
 		animator = GetComponent<EntityAnimator>();
 		// sprite renderer cast shadow
-		GetComponent<SpriteRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+		//GetComponent<SpriteRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
 	}
 
 	public void PositionIn3D()

@@ -6,11 +6,12 @@ public class GameInfo : MonoBehaviour
 	private int currentLevel;
 	private int playerHearts;
 	private int enemyKills;
+	private int turnsTaken;
 	private int currentScore;
 
 	public Action OnResetInfo;
 	public Action<int> OnTakeDamage;
-	public Action<Enemy> OnEnemyKilled;
+	public Action<Enemy, int> OnEnemyKilled;
 	public Action<int> OnUpdateScore;
 
 	public void Awake()
@@ -41,7 +42,12 @@ public class GameInfo : MonoBehaviour
 	public void AddKill(Enemy killedEnemy)
 	{
 		enemyKills++;
-		OnEnemyKilled?.Invoke(killedEnemy);
+		OnEnemyKilled?.Invoke(killedEnemy, enemyKills);
+	}
+
+	public void AddTurn()
+	{
+		turnsTaken++;
 	}
 
 	public void UpdateScore()

@@ -38,7 +38,6 @@ public class GameManager : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log("GameManager created");
 			Instance = this;
 		}
 
@@ -61,11 +60,14 @@ public class GameManager : MonoBehaviour
 			case GameState.AnimateAndMovePlayer:
 				if (cellGrid.player.AnimateMove())
 				{
+					gameInfo.AddTurn();
 					cellGrid.player.ResetMoveAnimation();
 					foreach (Cell killedEnemyCell in cellGrid.player.GetNextKillsCells())
 					{
-						cellGrid.enemies.Remove((Enemy)killedEnemyCell.entity);
+						Enemy killedEnemy = (Enemy)killedEnemyCell.entity;
+						cellGrid.enemies.Remove(killedEnemy);
 						killedEnemyCell.KillEntity();
+						gameInfo.AddKill(killedEnemy);
 					}
 					cellGrid.player.MakeMove();
 					foreach (Enemy enemy in cellGrid.enemies)
@@ -289,10 +291,8 @@ public class GameManager : MonoBehaviour
 		// Click on elevator or incubator
 		else
 		{
-			Debug.Log("Click on elevator or incubator");
 			// Highlight path to target cell
 			List<Cell> path = CellGrid.FindPath(cellGrid.player.GetCurrentCell(), targetCell, true);
-			Debug.Log("Path length: " + path.Count);
 			foreach (Cell cell in path)
 			{
 				// Light blue

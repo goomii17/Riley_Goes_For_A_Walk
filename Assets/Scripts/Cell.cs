@@ -21,6 +21,11 @@ public class Cell : MonoBehaviour
 		this.y = y;
 	}
 
+	public Vector3 GetPosition()
+	{
+		return transform.position;
+	}
+
 	public List<Cell> GetNeighbors()
 	{
 		List<Cell> neighbors = new List<Cell>();

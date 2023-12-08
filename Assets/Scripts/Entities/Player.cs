@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 public class Player : Entity
 {
-
 	private Cell killMeleeLeft;
 	private Cell killMeleeRight;
 	private Cell killFrontal;

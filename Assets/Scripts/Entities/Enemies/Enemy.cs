@@ -34,6 +34,7 @@ public abstract class Enemy : Entity
 	public virtual void FindNextMove(Cell playerCell)
 	{
 		List<Cell> path = CellGrid.FindPath(currentCell, playerCell, true);
+		//List<Cell> path = new List<Cell>();
 		if (path.Count > 0 && !alreadyTargetedCells.Contains(path[0]))
 		{
 			SetNextMoveCell(path[0]);
@@ -50,9 +51,15 @@ public abstract class Enemy : Entity
 		}
 	}
 
+	public abstract List<Cell> GetAttackableCells();
 	public abstract void UpdateNextAttack();
+
 	public abstract bool AnimateAttack();
 	public abstract void ResetAttackAnimation();
-	public abstract bool AttackPlayer();
-	public abstract List<Cell> GetAttackableCells();
+
+	public bool AttackPlayer()
+	{
+		return NextAttackCell != null;
+	}
+
 }
