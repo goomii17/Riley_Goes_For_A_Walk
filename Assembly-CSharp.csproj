@@ -73,6 +73,7 @@
     <Compile Include="Assets\Scripts\Tiles\Void.cs" />
     <Compile Include="Assets\Scripts\Entities\Enemy.cs" />
     <Compile Include="Assets\Scripts\Entities\Player.cs" />
+    <Compile Include="Assets\Scripts\Entities\Swat.cs" />
     <Compile Include="Assets\Scripts\Animators\EnemyAnimator.cs" />
     <Compile Include="Assets\Scripts\Cell.cs" />
     <Compile Include="Assets\Scripts\Animators\EntityAnimator.cs" />
