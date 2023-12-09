@@ -62,13 +62,27 @@ public class GameManager : MonoBehaviour
 				{
 					gameInfo.AddTurn();
 					cellGrid.player.ResetMoveAnimation();
+					// kill enemies
 					foreach (Cell killedEnemyCell in cellGrid.player.GetNextKillsCells())
 					{
 						Enemy killedEnemy = (Enemy)killedEnemyCell.entity;
 						cellGrid.enemies.Remove(killedEnemy);
 						killedEnemyCell.KillEntity();
-						gameInfo.AddKill(killedEnemy);
+						gameInfo.AddKill(killedEnemy.headPrefab);
 					}
+					// Try to drain mutant incubator
+					if (cellGrid.player.DrainIncubator())
+					{
+						Debug.Log("Drained incubator!!!!");
+						gameInfo.AddHeart();
+					}
+					// Try to take elevator
+					if (cellGrid.player.TakeElevator())
+					{
+						NextLevel();
+						break;
+					}
+					// Make move
 					cellGrid.player.MakeMove();
 					foreach (Enemy enemy in cellGrid.enemies)
 					{
@@ -107,7 +121,7 @@ public class GameManager : MonoBehaviour
 				Enemy.alreadyTargetedCells.Clear();
 				foreach (Enemy enemy in cellGrid.enemies)
 				{
-					enemy.FindNextMove(cellGrid.player.GetCurrentCell());
+					enemy.FindNextMove(cellGrid.player.GetCurrentCell(), gameInfo.GetCurrentLevel() / GameParams.NUMBERS_OF_LEVELS);
 				}
 				gameState = GameState.AnimateAndMoveEnemies;
 				break;
@@ -144,6 +158,13 @@ public class GameManager : MonoBehaviour
 		cellGrid.FillGrid(level: 1);
 	}
 
+	private void NextLevel()
+	{
+		gameInfo.NextLevel();
+		cellGrid.ResetGrid();
+		cellGrid.FillGrid(level: gameInfo.GetCurrentLevel());
+	}
+
 	/// <summary>
 	/// Menu -> PlayerTurn
 	/// </summary>
@@ -172,8 +193,8 @@ public class GameManager : MonoBehaviour
 		// No click
 		if (targetCell == null)
 		{
-			// If elevator is focused, there are no enemies and there is a path to the elevator
-			if (focusedCell != null && focusedCell.GetStructureType() == StructureType.Elevator)
+			// If structure is focused, there are no enemies and there is a path, keep moving
+			if (focusedCell != null && focusedCell.GetStructureType() != StructureType.None)
 			{
 				if (cellGrid.enemies.Count == 0 && cellGrid.highlightedPathCells.Count > 0)
 				{
@@ -221,9 +242,13 @@ public class GameManager : MonoBehaviour
 			HandleClickOnFloor();
 		}
 		// Click on entity
-		else
+		else if (targetCell.GetEntityType() != EntityType.None)
 		{
 			HandleClickOnEntity();
+		}
+		else
+		{
+			HandleClickOnStructure();
 		}
 	}
 
@@ -288,8 +313,16 @@ public class GameManager : MonoBehaviour
 				cellGrid.highlightedAttackCells.Add(cell);
 			}
 		}
-		// Click on elevator or incubator
-		else
+
+		focusedCell = targetCell;
+		targetCell = null;
+	}
+
+	private void HandleClickOnStructure()
+	{
+		Debug.Log("Click on structure");
+		// If cell was already focused, move to it
+		if (targetCell == focusedCell)
 		{
 			// Highlight path to target cell
 			List<Cell> path = CellGrid.FindPath(cellGrid.player.GetCurrentCell(), targetCell, true);
@@ -299,10 +332,51 @@ public class GameManager : MonoBehaviour
 				cell.Highlight(Color.cyan);
 				cellGrid.highlightedPathCells.Add(cell);
 			}
+			// Add structure to path
+			targetCell.Highlight(Color.cyan);
+			cellGrid.highlightedPathCells.Add(targetCell);
+			// Focus new cell
+			focusedCell = targetCell;
+			targetCell = null;
+			return;
 		}
 
-		focusedCell = targetCell;
-		targetCell = null;
+		// Click on elevator
+		if (targetCell.GetStructureType() == StructureType.Elevator)
+		{
+			// Highlight path to target cell
+			List<Cell> path = CellGrid.FindPath(cellGrid.player.GetCurrentCell(), targetCell, true);
+			foreach (Cell cell in path)
+			{
+				// Light blue
+				cell.Highlight(Color.cyan);
+				cellGrid.highlightedPathCells.Add(cell);
+			}
+			// Add elevator to path
+			targetCell.Highlight(Color.cyan);
+			cellGrid.highlightedPathCells.Add(targetCell);
+			// Focus new cell
+			focusedCell = targetCell;
+			targetCell = null;
+		}
+		// Click on incubator
+		else if (targetCell.GetStructureType() == StructureType.Incubator)
+		{
+			// Highlight path to target cell
+			List<Cell> path = CellGrid.FindPath(cellGrid.player.GetCurrentCell(), targetCell, true);
+			foreach (Cell cell in path)
+			{
+				// Light blue
+				cell.Highlight(Color.cyan);
+				cellGrid.highlightedPathCells.Add(cell);
+			}
+			// Add incubator to path
+			targetCell.Highlight(Color.cyan);
+			cellGrid.highlightedPathCells.Add(targetCell);
+			// Focus new cell
+			focusedCell = targetCell;
+			targetCell = null;
+		}
 	}
 
 	private void AnimateIdleEntities()

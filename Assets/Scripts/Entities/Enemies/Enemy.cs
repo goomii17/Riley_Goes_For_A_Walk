@@ -3,6 +3,10 @@ using UnityEngine;
 
 public abstract class Enemy : Entity
 {
+	protected EnemyAnimator animator;
+
+	[SerializeField] public GameObject headPrefab;
+
 	public static List<Cell> alreadyTargetedCells = new List<Cell>();
 
 	protected Cell NextAttackCell;
@@ -10,6 +14,11 @@ public abstract class Enemy : Entity
 	public Enemy() : base()
 	{
 		Type = EntityType.Enemy;
+	}
+
+	public void Awake()
+	{
+		animator = GetComponent<EnemyAnimator>();
 	}
 
 	public override void SetNextMoveCell(Cell cell)
@@ -31,7 +40,7 @@ public abstract class Enemy : Entity
 		return moveableCells;
 	}
 
-	public virtual void FindNextMove(Cell playerCell)
+	public virtual void FindNextMove(Cell playerCell, float intelligence)
 	{
 		List<Cell> path = CellGrid.FindPath(currentCell, playerCell, true);
 		//List<Cell> path = new List<Cell>();
@@ -49,6 +58,22 @@ public abstract class Enemy : Entity
 			}
 			SetNextMoveCell(moveableCells[Random.Range(0, moveableCells.Count)]);
 		}
+	}
+
+	public override void AnimateIdle()
+	{
+		animator.AnimateIdle();
+	}
+
+	public override void ResetMoveAnimation()
+	{
+		animator.ResetMoveAnimation();
+	}
+
+	public override bool AnimateMove()
+	{
+		if (nextMoveCell == null) return true;
+		return animator.AnimateMove(nextMoveCell);
 	}
 
 	public abstract List<Cell> GetAttackableCells();

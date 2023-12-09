@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0027767965, g: 0.015746947, b: 0.10828874, a: 1}
+  m_IndirectSpecularColor: {r: 0.0027585982, g: 0.01583438, b: 0.10828846, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -344,7 +344,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heartsText: {fileID: 1515610769}
   headContainer: {fileID: 963502328}
-  enemyHeadPrefab: {fileID: 2245285124345627587, guid: 31a4eb792e017864da6eceb00a0d8e2f, type: 3}
 --- !u!114 &499912822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -611,7 +610,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -621,8 +620,8 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
+    m_HighlightedSprite: {fileID: 21300000, guid: 10957fd9a2e299b45b8c4e575090c7eb, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: 457e65228938b3542bc8bcd002c675ec, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
@@ -903,7 +902,7 @@ MonoBehaviour:
   voidPrefab: {fileID: 6203080897546117984, guid: ffb33b894282059479a175305a9ce2df, type: 3}
   floorPrefab: {fileID: 3932214573111919730, guid: 9f8af16acfa10ed4faa85f9a6406ee54, type: 3}
   elevatorPrefab: {fileID: 302622155585683149, guid: 3a521d9c67786294b9e6e5120e02ae8c, type: 3}
-  incubatorPrefab: {fileID: 0}
+  incubatorPrefab: {fileID: 3738445994754553520, guid: c73ba4d9b5088ce4cb4832d25e598315, type: 3}
   playerPrefab: {fileID: 3922869632276136598, guid: 4dc46bb0daec2654aa3f3156e86ab77d, type: 3}
   enemyPrefabs:
   - {fileID: 8270151079411219810, guid: 054a1e2f499466b44ad38c6a571637da, type: 3}
@@ -1045,6 +1044,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1515610767}
   m_CullTransparentMesh: 1
+--- !u!1 &1651567727
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1651567729}
+  - component: {fileID: 1651567728}
+  m_Layer: 0
+  m_Name: SkyParallax
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1651567728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651567727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c951e2f13a1ec54bb20cf560dbabdb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1651567729
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651567727}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 165.44261, y: 228.44705, z: 35.13215}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1956840667
 GameObject:
   m_ObjectHideFlags: 0
@@ -1170,3 +1213,4 @@ SceneRoots:
   - {fileID: 1956840670}
   - {fileID: 499912820}
   - {fileID: 1253688381}
+  - {fileID: 1651567729}

@@ -8,13 +8,13 @@ public abstract class EntityAnimator : MonoBehaviour
 	// Idle animation
 	[SerializeField] protected Sprite[] IdleSprites = null;
 	protected const float IDLE_ANIMATION_TIME = 1.0f;
-	protected const float RandomFlippingChance = 0.0001f;
+	protected const float RandomFlippingChance = 0.00025f;
 	protected float idleAnimationTimer = 0f;
 	protected int idleSpriteIndex = 0;
 
 	public virtual void AnimateIdle()
 	{
-		// Change sprite every 1.0/lenght of IdleSprites
+		// Change sprite
 		idleAnimationTimer += Time.deltaTime;
 
 		if (idleAnimationTimer >= IDLE_ANIMATION_TIME / IdleSprites.Length)
@@ -36,7 +36,5 @@ public abstract class EntityAnimator : MonoBehaviour
 	}
 
 	public abstract void ResetMoveAnimation();
-
-	public abstract bool AnimateMove(Cell targetCell);
 
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Hazmat : Enemy
 {
@@ -7,8 +8,8 @@ public class Hazmat : Enemy
 		List<Cell> knightMoves = new List<Cell>();
 		for (int i = 0; i < 5; i += 2)
 		{
-			int n1 = (i + 5) % 5;
-			int n2 = (i + 1) % 5;
+			int n1 = (i + 5) % 6;
+			int n2 = (i + 1) % 6;
 			if (cell.neighbors[i] != null)
 			{
 				Cell nightCell1 = cell.neighbors[i].neighbors[n1];
@@ -23,17 +24,16 @@ public class Hazmat : Enemy
 				}
 			}
 		}
-
 		return knightMoves;
 	}
 
-	public override void FindNextMove(Cell playerCell)
+	public override void FindNextMove(Cell playerCell, float intelligence)
 	{
 		List<Cell> bestPath = null;
 		int minLength = 10000;
 		foreach (Cell cell in GetValidKnightMoves(playerCell))
 		{
-			List<Cell> path = CellGrid.FindPath(currentCell, cell, true);
+			List<Cell> path = CellGrid.FindPath(currentCell, cell, false);
 			if (path.Count > 0 && path.Count < minLength)
 			{
 				if (!alreadyTargetedCells.Contains(path[0]))
@@ -43,16 +43,29 @@ public class Hazmat : Enemy
 				}
 			}
 		}
-
-		if (bestPath != null)
+		// Make best move to corner player
+		if (bestPath != null && Random.Range(0f, 1f) < intelligence)
 		{
 			SetNextMoveCell(bestPath[0]);
-		}
-		else
-		{
-			SetNextMoveCell(null);
+			return;
 		}
 
+		// Try to move towards player
+		List<Cell> pathToPlayer = CellGrid.FindPath(currentCell, playerCell, true);
+		if (pathToPlayer.Count > 0 && !alreadyTargetedCells.Contains(pathToPlayer[0]))
+		{
+			SetNextMoveCell(pathToPlayer[0]);
+			return;
+		}
+
+		// Move randomly
+		List<Cell> moveableCells = GetMoveableCells();
+		if (moveableCells.Count > 0)
+		{
+			SetNextMoveCell(moveableCells[Random.Range(0, moveableCells.Count)]);
+			return;
+		}
+		SetNextMoveCell(null);
 	}
 
 	public override void UpdateNextAttack()

@@ -13,21 +13,12 @@ public abstract class Entity : MonoBehaviour
 
 	public EntityType Type { get; protected set; }
 
-	protected EntityAnimator animator;
-
 	protected Cell currentCell;
 	protected Cell nextMoveCell;
 
-	public void Awake()
-	{
-		animator = GetComponent<EntityAnimator>();
-		// sprite renderer cast shadow
-		//GetComponent<SpriteRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-	}
-
 	public void PositionIn3D()
 	{
-		Vector3 startPosition = Vector3.up * 4.6f - Vector3.forward * 3.8f;
+		Vector3 startPosition = Vector3.up * GameParams.ENTITY_3D_HEIGHT + Vector3.forward * GameParams.ENTITY_3D_DEPTH;
 		Quaternion startRotation = Quaternion.Euler(-15, 0, 0);
 		transform.SetLocalPositionAndRotation(startPosition, startRotation);
 	}
@@ -43,36 +34,6 @@ public abstract class Entity : MonoBehaviour
 		return currentCell;
 	}
 
-	public void AnimateIdle()
-	{
-		animator.AnimateIdle();
-	}
-
-	public virtual void SetNextMoveCell(Cell cell)
-	{
-		nextMoveCell = cell;
-	}
-
-	public bool AnimateMove()
-	{
-		if (nextMoveCell == null) return true;
-		return animator.AnimateMove(nextMoveCell);
-	}
-
-	public void ResetMoveAnimation()
-	{
-		animator.ResetMoveAnimation();
-	}
-
-	public void MakeMove()
-	{
-		if (nextMoveCell != null && nextMoveCell != currentCell)
-		{
-			currentCell.UnSetEntity();
-			nextMoveCell.SetEntity(this);
-		}
-	}
-
 	public virtual List<Cell> GetMoveableCells()
 	{
 		List<Cell> moveableCells = new List<Cell>();
@@ -85,5 +46,29 @@ public abstract class Entity : MonoBehaviour
 		}
 		return moveableCells;
 	}
+
+
+	public virtual void SetNextMoveCell(Cell cell)
+	{
+		nextMoveCell = cell;
+	}
+
+	public Cell GetNextMoveCell()
+	{
+		return nextMoveCell;
+	}
+
+	public void MakeMove()
+	{
+		if (nextMoveCell != null && nextMoveCell != currentCell)
+		{
+			currentCell.UnSetEntity();
+			nextMoveCell.SetEntity(this);
+		}
+	}
+
+	public abstract void AnimateIdle();
+	public abstract void ResetMoveAnimation();
+	public abstract bool AnimateMove();
 
 }

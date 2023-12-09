@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Player : Entity
 {
+	protected PlayerAnimator animator;
+
 	private Cell killMeleeLeft;
 	private Cell killMeleeRight;
 	private Cell killFrontal;
@@ -9,6 +12,24 @@ public class Player : Entity
 	public Player() : base()
 	{
 		Type = EntityType.Player;
+	}
+
+	public void Awake()
+	{
+		animator = GetComponent<PlayerAnimator>();
+	}
+
+	public override List<Cell> GetMoveableCells()
+	{
+		List<Cell> moveableCells = new List<Cell>();
+		foreach (Cell cell in currentCell.GetNeighbors())
+		{
+			if (cell.IsEmptyFloor() || cell.GetStructureType() != StructureType.None)
+			{
+				moveableCells.Add(cell);
+			}
+		}
+		return moveableCells;
 	}
 
 	public void UpdateNextKills(Cell nextCell)
@@ -111,4 +132,47 @@ public class Player : Entity
 		return kills;
 	}
 
+	public bool DrainIncubator()
+	{
+		Debug.Log("DrainIncubator???");
+		if (nextMoveCell != null && nextMoveCell.GetStructureType() == StructureType.Incubator)
+		{
+			Debug.Log("YEEES");
+			Incubator incubator = (Incubator)nextMoveCell.structure;
+			if (incubator.IsFilled())
+			{
+				Debug.Log("IS FILLED");
+				incubator.Drain();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public bool TakeElevator()
+	{
+		if (nextMoveCell != null && nextMoveCell.GetStructureType() == StructureType.Elevator)
+		{
+			Elevator elevator = (Elevator)nextMoveCell.structure;
+			elevator.Open();
+			return true;
+		}
+		return false;
+	}
+
+	public override void AnimateIdle()
+	{
+		animator.AnimateIdle();
+	}
+
+	public override void ResetMoveAnimation()
+	{
+		animator.ResetMoveAnimation();
+	}
+
+	public override bool AnimateMove()
+	{
+		if (nextMoveCell == null) return true;
+		return animator.AnimateMove(nextMoveCell, killMeleeLeft, killMeleeRight, killFrontal);
+	}
 }

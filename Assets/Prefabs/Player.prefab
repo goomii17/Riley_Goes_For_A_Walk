@@ -113,6 +113,6 @@ MonoBehaviour:
   IdleSprites:
   - {fileID: 21300000, guid: e3d98b71c6b057a4cb7a25cf7567570f, type: 3}
   - {fileID: 21300000, guid: 6da4221842f1a214c984690769c33fd1, type: 3}
-  MoveSprites:
+  walkSprites:
   - {fileID: 21300000, guid: 45d10c3bd2a792e47b68e77f4161ca64, type: 3}
   - {fileID: 21300000, guid: 1c60351a80afc2340a6605ba293dfd33, type: 3}

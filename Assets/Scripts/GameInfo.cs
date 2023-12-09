@@ -10,8 +10,8 @@ public class GameInfo : MonoBehaviour
 	private int currentScore;
 
 	public Action OnResetInfo;
-	public Action<int> OnTakeDamage;
-	public Action<Enemy, int> OnEnemyKilled;
+	public Action<int> OnHeartChange;
+	public Action<GameObject, int> OnEnemyKilled;
 	public Action<int> OnUpdateScore;
 
 	public void Awake()
@@ -33,16 +33,27 @@ public class GameInfo : MonoBehaviour
 		currentLevel++;
 	}
 
+	public int GetCurrentLevel()
+	{
+		return currentLevel;
+	}
+
 	public void TakeDamage()
 	{
 		playerHearts--;
-		OnTakeDamage?.Invoke(playerHearts);
+		OnHeartChange?.Invoke(playerHearts);
 	}
 
-	public void AddKill(Enemy killedEnemy)
+	public void AddHeart()
+	{
+		playerHearts++;
+		OnHeartChange?.Invoke(playerHearts);
+	}
+
+	public void AddKill(GameObject enemyHeadPrefab)
 	{
 		enemyKills++;
-		OnEnemyKilled?.Invoke(killedEnemy, enemyKills);
+		OnEnemyKilled?.Invoke(enemyHeadPrefab, enemyKills);
 	}
 
 	public void AddTurn()

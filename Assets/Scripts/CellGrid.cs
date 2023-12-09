@@ -147,7 +147,7 @@ public class CellGrid : MonoBehaviour
 	/// Procedurally generate levels.
 	/// </summary>
 	/// <param name="level"></param>
-	public void FillGrid(int level = 1)
+	public void FillGrid(int level = 0)
 	{
 		// Put player on the grid
 		Cell playerCell = grid[1, 4].GetComponent<Cell>();
@@ -200,8 +200,8 @@ public class CellGrid : MonoBehaviour
 			}
 		}
 
-		// We add 7 more cells near those 3 void cells
-		for (int i = 0; i < 7; i++)
+		// We add 7 + level more cells near those 3 void cells
+		for (int i = 0; i < 7 + level; i++)
 		{
 			// Get all neighbors of void cells
 			List<Cell> neighbors = new List<Cell>();
@@ -250,12 +250,19 @@ public class CellGrid : MonoBehaviour
 		}
 
 		// Put incubator on the grid
-		// not implemented yet
+		int putCellCount = 0;
+		PutStructureOnCell(remainingCells[putCellCount], incubatorPrefab);
+		putCellCount++;
+
 		// Put enemies on the grid
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < enemyPrefabs.Length; i++)
 		{
-			PutEntityOnCell(remainingCells[i], enemyPrefabs[0]);
-			enemies.Add(remainingCells[i].entity as Enemy);
+			for (int j = 0; j < GameParams.LEVEL_ENEMY_COUNT[level, i]; j++)
+			{
+				PutEntityOnCell(remainingCells[putCellCount], enemyPrefabs[i]);
+				enemies.Add(remainingCells[putCellCount].entity as Enemy);
+				putCellCount++;
+			}
 		}
 
 		// Fill the grid with floor
@@ -269,7 +276,6 @@ public class CellGrid : MonoBehaviour
 
 				if (!voidCells.Contains(cell))
 				{
-					// Add floor
 					GameObject floorObject = Instantiate(floorPrefab, Vector3.zero, Quaternion.identity);
 					cell.SetTile(floorObject.GetComponent<LabFloor>());
 				}
@@ -371,7 +377,6 @@ public class CellGrid : MonoBehaviour
 
 	public List<Cell> RandomUpWalk(Cell startCell, Cell endCell)
 	{
-		// List path
 		List<Cell> path = new List<Cell>
 		{
 			startCell
@@ -381,7 +386,6 @@ public class CellGrid : MonoBehaviour
 		{
 			List<Cell> possibleCells = new List<Cell>
 			{
-				// neighbors  0, 1 and 5
 				currentCell.neighbors[0],
 				currentCell.neighbors[1],
 				currentCell.neighbors[5]

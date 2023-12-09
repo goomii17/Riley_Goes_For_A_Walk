@@ -8,8 +8,6 @@ public class InfoManager : MonoBehaviour
 
 	[SerializeField] private GameObject headContainer;
 
-	[SerializeField] private GameObject enemyHeadPrefab;
-
 	public void Awake()
 	{
 		gameInfo = GetComponent<GameInfo>();
@@ -18,7 +16,7 @@ public class InfoManager : MonoBehaviour
 	public void OnEnable()
 	{
 		gameInfo.OnResetInfo += ResetInfo;
-		gameInfo.OnTakeDamage += UpdateHearts;
+		gameInfo.OnHeartChange += UpdateHearts;
 		gameInfo.OnEnemyKilled += UpdateKills;
 		gameInfo.OnUpdateScore += UpdateScore;
 	}
@@ -26,7 +24,7 @@ public class InfoManager : MonoBehaviour
 	public void OnDisable()
 	{
 		gameInfo.OnResetInfo -= ResetInfo;
-		gameInfo.OnTakeDamage -= UpdateHearts;
+		gameInfo.OnHeartChange -= UpdateHearts;
 		gameInfo.OnEnemyKilled -= UpdateKills;
 		gameInfo.OnUpdateScore -= UpdateScore;
 	}
@@ -39,12 +37,11 @@ public class InfoManager : MonoBehaviour
 
 	private void UpdateHearts(int playerHearts)
 	{
-		Debug.Log("UpdateHearts");
-		playerHearts = Mathf.Clamp(playerHearts, 0, GameParams.STARTING_PLAYER_HEARTS);
+		playerHearts = Mathf.Max(0, playerHearts);
 		heartsText.text = "= " + playerHearts.ToString();
 	}
 
-	private void UpdateKills(Enemy enemy, int nKills)
+	private void UpdateKills(GameObject headPrefab, int nKills)
 	{
 		if (nKills == 0)
 		{
@@ -54,8 +51,7 @@ public class InfoManager : MonoBehaviour
 			}
 			return;
 		}
-		Debug.Log("UpdateKills");
-		GameObject head = Instantiate(enemyHeadPrefab, Vector3.right * (nKills - 1) * 12, Quaternion.identity);
+		GameObject head = Instantiate(headPrefab, Vector3.right * (nKills - 1) * 12, Quaternion.identity);
 		head.transform.SetParent(headContainer.transform, false);
 	}
 

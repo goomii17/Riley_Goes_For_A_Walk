@@ -3,7 +3,14 @@ guid: 682e13d4fd2fa8543a1a369c2b8c8632
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - cellPrefab: {instanceID: 0}
+  - voidPrefab: {instanceID: 0}
+  - floorPrefab: {instanceID: 0}
+  - elevatorPrefab: {instanceID: 0}
+  - incubatorPrefab: {instanceID: 0}
+  - playerPrefab: {instanceID: 0}
+  - player: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

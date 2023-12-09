@@ -21,9 +21,12 @@ public class Cell : MonoBehaviour
 		this.y = y;
 	}
 
-	public Vector3 GetPosition()
+	public Vector3 GetEntityPosition()
 	{
-		return transform.position;
+		Vector3 position = transform.position;
+		position.y += GameParams.ENTITY_3D_HEIGHT;
+		position.z += GameParams.ENTITY_3D_DEPTH;
+		return position;
 	}
 
 	public List<Cell> GetNeighbors()
