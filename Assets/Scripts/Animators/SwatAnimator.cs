@@ -2,6 +2,9 @@
 
 public class SwatAnimator : EntityAnimator
 {
+	// Prefab bullet
+	[SerializeField] GameObject bulletPrefab = null;
+
 	// Walk animation
 	[SerializeField] Sprite[] MoveSprites = null;
 	private const float MOVE_ANIMATION_TIME = 0.4f;
@@ -14,8 +17,9 @@ public class SwatAnimator : EntityAnimator
 	private bool isMoving = false;
 
 	// Attack animation
-	private const float ATTACK_ANIMATION_TIME = 0.35f;
-	private const float ATTACK_INTRUSION_PERCENTAGE = 0.6f;
+	private const float IMPACT_ANIMATION_TIME = 0.35f;
+	private const float BULLET_SPEED = 10f;
+	private float impactAnimationTimer = 0f;
 	private float attackAnimationTimer = 0f;
 	private Vector3 startPosition;
 	private int attackAnimationState = 0; // 0 - off, 1 going forward, 2 backwards, 3 finished
@@ -83,6 +87,7 @@ public class SwatAnimator : EntityAnimator
 
 	public void ResetAttackAnimation()
 	{
+		impactAnimationTimer = 0f;
 		attackAnimationTimer = 0f;
 		attackAnimationState = 0;
 	}
@@ -96,41 +101,57 @@ public class SwatAnimator : EntityAnimator
 
 		switch (attackAnimationState)
 		{
-			case 0:
+			case 0: // Start animation
 				startPosition = transform.position;
 				attackAnimationState = 1;
 				return false;
 			case 1:
-				attackAnimationTimer += Time.deltaTime;
-
-				Vector3 targetPosition = startPosition + (playerCell.GetPosition() - startPosition) * ATTACK_INTRUSION_PERCENTAGE;
-				Vector3 newPosition = Vector3.Lerp(startPosition, targetPosition, 2 * attackAnimationTimer / ATTACK_ANIMATION_TIME);
-				transform.position = newPosition;
-
-				if (attackAnimationTimer > ATTACK_ANIMATION_TIME / 2)
-				{
-					playerCell.entity.GetComponent<SpriteRenderer>().color = Color.red;
-					attackAnimationState = 2;
-				}
-
+				// Create bullet
+				playerCell.entity.GetComponent<SpriteRenderer>().color = Color.white;
+				// Create bullet in start position
+				GameObject bullet = Instantiate(bulletPrefab, startPosition, Quaternion.identity);
+				// rotate bullet to player
+				Vector3 direction = playerCell.transform.position - startPosition;
+				float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+				bullet.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+				// end case
+				attackAnimationState = 2;
 				return false;
 			case 2:
-				attackAnimationTimer += Time.deltaTime;
+				// Move bullet
+				Vector3 targetPosition = playerCell.transform.position;
+				bulletPrefab.transform.position += bulletPrefab.transform.right * BULLET_SPEED * Time.deltaTime;
 
-				Vector3 targetPosition2 = startPosition + (playerCell.GetPosition() - startPosition) * ATTACK_INTRUSION_PERCENTAGE;
-				Vector3 newPosition2 = Vector3.Lerp(targetPosition2, startPosition, 2 * (attackAnimationTimer / ATTACK_ANIMATION_TIME - 0.5f));
-				transform.position = newPosition2;
-
-				if (attackAnimationTimer > ATTACK_ANIMATION_TIME)
+				// Check if bullet reached player
+				if (Vector3.Distance(bulletPrefab.transform.position, targetPosition) < 0.1f)
 				{
-					playerCell.entity.GetComponent<SpriteRenderer>().color = Color.white;
 					attackAnimationState = 3;
+					return false;
 				}
-
-				return false;
+				else
+				{
+					return false;
+				}
 			case 3:
-				return true;
+				// destroy bullet
+				Destroy(bulletPrefab);
 
+				//paint player red for IMPACT_ANIMATION_TIME
+				playerCell.entity.GetComponent<SpriteRenderer>().color = Color.red;
+				impactAnimationTimer += Time.deltaTime;
+				if (impactAnimationTimer >= IMPACT_ANIMATION_TIME)
+				{
+					attackAnimationState = 4;
+					return false;
+				}
+				else
+				{
+					return false;
+				}
+			case 4:
+				// end animation
+				playerCell.entity.GetComponent<SpriteRenderer>().color = Color.white;
+				return true;
 			default: return true;
 		}
 

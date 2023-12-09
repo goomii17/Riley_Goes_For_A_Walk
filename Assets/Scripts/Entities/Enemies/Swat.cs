@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Unity.PlasticSCM.Editor.WebApi;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public class Swat : Enemy
@@ -73,42 +75,27 @@ public class Swat : Enemy
 	{
 		// Swat can attack in all 6 directions in a range of 5
 		List<Cell> attackableCells = new List<Cell>();
-		List<Cell> attackableCellsCoords = new List<Cell>();
-		List<List<int>> directions = new List<List<int>>();
-		directions.Add(new List<int> { 0, 1 });
-		directions.Add(new List<int> { 1, 0 });
-		directions.Add(new List<int> { 1, -1 });
-		directions.Add(new List<int> { 0, -1 });
-		directions.Add(new List<int> { -1, 0 });
-		directions.Add(new List<int> { -1, 1 });
-		int x = currentCell.x;
-		int y = currentCell.y;
-		foreach (List<int> direction in directions)
+
+		for (int i = 0; i < 6; i++)
 		{
-			for (int i = 0; i < 5; i++)
+			Cell cell = currentCell.neighbors[i];
+			if (cell == null)
 			{
-				x += direction[0];
-				y += direction[1];
-				if (CellGrid.IsInGrid(y, x))
-				{
-					GameObject cellObject = GameManager.Instance.cellGrid.GetCell(y, x);
-					Cell cell = cellObject.GetComponent<Cell>();
-					if (cell.IsEmptyFloor())
-					{
-						attackableCells.Add(cell);
-					}
-					else
-					{
-						break;
-					}
-				}
-				else
+				continue;
+			}
+			for (int j = 0; j < 5; j++)
+			{
+				cell = cell.neighbors[i];
+				if (cell == null)
 				{
 					break;
 				}
+				if (cell.GetEntityType() == EntityType.Enemy)
+				{
+					break;
+				}
+				attackableCells.Add(cell);
 			}
-			x = currentCell.x;
-			y = currentCell.y;
 		}
 		return attackableCells;
 	}

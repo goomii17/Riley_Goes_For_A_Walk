@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Animators\HazmatAnimator.cs" />
+     <Compile Include="Assets\Scripts\SkyboxRotation.cs" />
      <Compile Include="Assets\Scripts\Structures\Elevator.cs" />
      <Compile Include="Assets\Scripts\GameParams.cs" />
      <Compile Include="Assets\Scripts\Entities\Enemies\Enemy.cs" />

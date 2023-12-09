@@ -49,9 +49,14 @@ public class CellGrid : MonoBehaviour
 		return cells;
 	}
 
-	public GameObject GetCell(int i, int j)
+	public Cell GetCell(int i, int j)
 	{
-		return grid[i, j];
+		if (grid[i, j] == null)
+		{
+			return null;
+		}
+		GameObject cellObject = grid[i, j];
+		return cellObject.GetComponent<Cell>();
 	}
 
 	public void UnHighLightAllCells()
