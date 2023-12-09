@@ -18,10 +18,10 @@ public class SwatAnimator : EntityAnimator
 
 	// Attack animation
 	private const float IMPACT_ANIMATION_TIME = 0.35f;
-	private const float BULLET_SPEED = 10f;
+	private const float BULLET_SPEED = 150f;
 	private float impactAnimationTimer = 0f;
-	private float attackAnimationTimer = 0f;
 	private Vector3 startPosition;
+	GameObject bullet;
 	private int attackAnimationState = 0; // 0 - off, 1 going forward, 2 backwards, 3 finished
 
 	public void Awake()
@@ -40,8 +40,6 @@ public class SwatAnimator : EntityAnimator
 	/// <summary>
 	/// Animate move from current cell to target cell. Returns true when animation is finished.
 	/// </summary>
-	/// <param name="targetCell"></param>
-	/// <returns></returns>
 	public override bool AnimateMove(Cell targetCell)
 	{
 		// Just move to target updating transform position
@@ -106,10 +104,10 @@ public class SwatAnimator : EntityAnimator
 				attackAnimationState = 1;
 				return false;
 			case 1:
-				// Create bullet
-				playerCell.entity.GetComponent<SpriteRenderer>().color = Color.white;
 				// Create bullet in start position
-				GameObject bullet = Instantiate(bulletPrefab, startPosition, Quaternion.identity);
+				bullet = Instantiate(bulletPrefab, Vector3.zero, Quaternion.identity);
+				bullet.transform.SetParent(transform, false);
+				bullet.transform.localScale = new Vector3(1f, 1f, 1f);
 				// rotate bullet to player
 				Vector3 direction = playerCell.transform.position - startPosition;
 				float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -120,11 +118,18 @@ public class SwatAnimator : EntityAnimator
 			case 2:
 				// Move bullet
 				Vector3 targetPosition = playerCell.transform.position;
-				bulletPrefab.transform.position += bulletPrefab.transform.right * BULLET_SPEED * Time.deltaTime;
+
+				bullet.transform.position = Vector3.MoveTowards(bullet.transform.position, targetPosition, BULLET_SPEED * Time.deltaTime);
+
+				Debug.Log("bullet.transform.position: " + bullet.transform.position);
+				Debug.Log("targetPosition: " + targetPosition);
 
 				// Check if bullet reached player
-				if (Vector3.Distance(bulletPrefab.transform.position, targetPosition) < 0.1f)
+				if (Vector3.Distance(bullet.transform.position, targetPosition) < 0.1f)
 				{
+					// destroy bullet
+					Destroy(bullet);
+					playerCell.entity.GetComponent<SpriteRenderer>().color = Color.red;
 					attackAnimationState = 3;
 					return false;
 				}
@@ -133,11 +138,9 @@ public class SwatAnimator : EntityAnimator
 					return false;
 				}
 			case 3:
-				// destroy bullet
-				Destroy(bulletPrefab);
 
 				//paint player red for IMPACT_ANIMATION_TIME
-				playerCell.entity.GetComponent<SpriteRenderer>().color = Color.red;
+
 				impactAnimationTimer += Time.deltaTime;
 				if (impactAnimationTimer >= IMPACT_ANIMATION_TIME)
 				{
