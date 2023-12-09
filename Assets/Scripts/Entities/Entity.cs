@@ -58,14 +58,7 @@ public abstract class Entity : MonoBehaviour
 		return nextMoveCell;
 	}
 
-	public void MakeMove()
-	{
-		if (nextMoveCell != null && nextMoveCell != currentCell)
-		{
-			currentCell.UnSetEntity();
-			nextMoveCell.SetEntity(this);
-		}
-	}
+	public abstract void MakeMove();
 
 	public abstract void AnimateIdle();
 	public abstract void ResetMoveAnimation();

@@ -6,18 +6,24 @@ public class PlayerAnimator : EntityAnimator
 	private int moveAnimationState = 0; // 0 - init, 1 animate move to next cell, 2 animate attack 1, 3 animate attack 2, 4 animate attack 3, 5 finished
 
 	// Walk animation
-	private const float WALK_ANIMATION_TIME = 0.45f;
+	private const float WALK_ANIMATION_TIME = 0.35f;
 	private float walkAnimationTimer = 0f;
 	private int walkAnimationState = 0; // 0 - init, 1 animate walk to next cell, 2 finished
 
 	// Attack animation
-	private const float ATTACK_ANIMATION_TIME = 0.35f;
-	private const float ATTACK_INTRUSION_PERCENTAGE = 0.6f;
+	private const float ATTACK_ANIMATION_TIME = 0.3f;
+	private const float ATTACK_INTRUSION_PERCENTAGE = 0.65f;
 	private float attackAnimationTimer = 0f;
 	private int attackAnimationState = 0; // 0 - init, 1 going forward, 2 backwards, 3 finished
 
 	// Common
 	private Vector3 startPosition;
+
+	// Evolution
+	[SerializeField] private Sprite[] evolutions = null;
+	[SerializeField] private Sprite[] evolutions_idle = null;
+	private int evolutionState = 0;
+
 
 	public void Awake()
 	{
@@ -53,18 +59,21 @@ public class PlayerAnimator : EntityAnimator
 				if (AnimateWalk(startPosition, targetCell.GetEntityPosition()))
 				{
 					startPosition = targetCell.GetEntityPosition();
+					ResetAttackAnimation();
 					moveAnimationState = 2;
 				}
 				return false;
 			case 2:
 				if (AnimateAttack(killMeleeLeft))
 				{
+					ResetAttackAnimation();
 					moveAnimationState = 3;
 				}
 				return false;
 			case 3:
 				if (AnimateAttack(killMeleeRight))
 				{
+					ResetAttackAnimation();
 					moveAnimationState = 4;
 				}
 				return false;
@@ -105,6 +114,12 @@ public class PlayerAnimator : EntityAnimator
 
 			default: return true;
 		}
+	}
+
+	private void ResetAttackAnimation()
+	{
+		attackAnimationTimer = 0f;
+		attackAnimationState = 0;
 	}
 
 	private bool AnimateAttack(Cell enemyCell)
@@ -150,7 +165,20 @@ public class PlayerAnimator : EntityAnimator
 
 			default: return true;
 		}
+	}
 
+	public void Evolve()
+	{
+		if (evolutionState > evolutions.Length - 1)
+		{
+			Debug.Log("Evolution state is already maxed out!");
+			return;
+		}
+		IdleSprites = new Sprite[2];
+		IdleSprites[0] = evolutions[evolutionState];
+		IdleSprites[1] = evolutions_idle[evolutionState];
+		spriteRenderer.sprite = IdleSprites[0];
+		evolutionState++;
 	}
 
 }

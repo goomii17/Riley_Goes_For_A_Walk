@@ -6,6 +6,7 @@ public class GameInfo : MonoBehaviour
 	private int currentLevel;
 	private int playerHearts;
 	private int enemyKills;
+	private int rileyEvolution;
 	private int turnsTaken;
 	private int currentScore;
 
@@ -14,18 +15,15 @@ public class GameInfo : MonoBehaviour
 	public Action<GameObject, int> OnEnemyKilled;
 	public Action<int> OnUpdateScore;
 
-	public void Awake()
-	{
-		ResetGameInfo();
-	}
-
 	public void ResetGameInfo()
 	{
 		currentLevel = 0;
 		playerHearts = GameParams.STARTING_PLAYER_HEARTS;
 		enemyKills = 0;
+		rileyEvolution = 0;
 		currentScore = 0;
-		OnResetInfo?.Invoke();
+		Debug.Log("ResetGameInfo");
+		OnResetInfo();
 	}
 
 	public void NextLevel()
@@ -54,6 +52,11 @@ public class GameInfo : MonoBehaviour
 	{
 		enemyKills++;
 		OnEnemyKilled?.Invoke(enemyHeadPrefab, enemyKills);
+	}
+
+	public int GetRileyEvolution()
+	{
+		return rileyEvolution;
 	}
 
 	public void AddTurn()

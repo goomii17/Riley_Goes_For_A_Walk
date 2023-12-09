@@ -113,6 +113,15 @@ MonoBehaviour:
   IdleSprites:
   - {fileID: 21300000, guid: e3d98b71c6b057a4cb7a25cf7567570f, type: 3}
   - {fileID: 21300000, guid: 6da4221842f1a214c984690769c33fd1, type: 3}
-  walkSprites:
-  - {fileID: 21300000, guid: 45d10c3bd2a792e47b68e77f4161ca64, type: 3}
-  - {fileID: 21300000, guid: 1c60351a80afc2340a6605ba293dfd33, type: 3}
+  evolutions:
+  - {fileID: 21300000, guid: badeaa107e25ff64790f288c15e8ddda, type: 3}
+  - {fileID: 21300000, guid: b01656bc3cd7b684bbbc41b414ccdc71, type: 3}
+  - {fileID: 21300000, guid: 89b08b4b1205fbe42926db020e99eaf1, type: 3}
+  - {fileID: 21300000, guid: 7c8c7ec5efc759b4f975aa097762f33c, type: 3}
+  - {fileID: 21300000, guid: 5de38edcd5f308242a260f5a8c5c2114, type: 3}
+  evolutions_idle:
+  - {fileID: 21300000, guid: dc9580361f49f4c4997d993ff79d2489, type: 3}
+  - {fileID: 21300000, guid: ca828403323ed434d871849603f92d36, type: 3}
+  - {fileID: 21300000, guid: 730ee2e54a7b8f34a95b976d01a80a4c, type: 3}
+  - {fileID: 21300000, guid: 799d8792aa304b84e8554ae20c497f12, type: 3}
+  - {fileID: 21300000, guid: d5140ba5beca9cc4e8390e2de651dcd4, type: 3}

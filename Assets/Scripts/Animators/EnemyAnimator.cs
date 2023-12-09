@@ -3,7 +3,7 @@
 public abstract class EnemyAnimator : EntityAnimator
 {
 	// Walk animation
-	private const float WALK_ANIMATION_TIME = 0.45f;
+	private const float WALK_ANIMATION_TIME = 0.35f;
 	private float walkAnimationTimer = 0f;
 	private int walkAnimationState = 0; // 0 - init, 1 animate walk to next cell, 2 finished
 

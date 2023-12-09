@@ -62,10 +62,8 @@
     <Compile Include="Assets\Scripts\SkyboxRotation.cs" />
     <Compile Include="Assets\Scripts\Structures\Elevator.cs" />
     <Compile Include="Assets\Scripts\GameParams.cs" />
-    <Compile Include="Assets\Scripts\Entities\Enemies\Enemy.cs" />
     <Compile Include="Assets\Scripts\Entities\Entity.cs" />
     <Compile Include="Assets\Scripts\Structures\Incubator.cs" />
-    <Compile Include="Assets\Scripts\Entities\Enemies\Hazmat.cs" />
     <Compile Include="Assets\Scripts\GameInfo.cs" />
     <Compile Include="Assets\Scripts\Tiles\LabFloor.cs" />
     <Compile Include="Assets\Scripts\Tiles\Tile.cs" />
@@ -73,10 +71,12 @@
     <Compile Include="Assets\Scripts\InfoManager.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Tiles\Void.cs" />
+    <Compile Include="Assets\Scripts\Entities\Enemy.cs" />
     <Compile Include="Assets\Scripts\Entities\Player.cs" />
     <Compile Include="Assets\Scripts\Animators\EnemyAnimator.cs" />
     <Compile Include="Assets\Scripts\Cell.cs" />
     <Compile Include="Assets\Scripts\Animators\EntityAnimator.cs" />
+    <Compile Include="Assets\Scripts\Entities\Hazmat.cs" />
     <Compile Include="Assets\Scripts\Structures\Structure.cs" />
     <Compile Include="Assets\Scripts\CellGrid.cs" />
   </ItemGroup>

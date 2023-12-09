@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
 
 	// Menu canvas
 	public GameObject menuCanvas;
+	public GameObject gameInfoCanvas;
 
 	private GameState gameState;
 
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour
 		}
 
 		menuCanvas.SetActive(true);
+		gameInfoCanvas.SetActive(false);
 		gameState = GameState.Menu;
 	}
 
@@ -58,6 +60,7 @@ public class GameManager : MonoBehaviour
 				HandlePlayerClick();
 				break;
 			case GameState.AnimateAndMovePlayer:
+				AnimateIdleEntities();
 				if (cellGrid.player.AnimateMove())
 				{
 					gameInfo.AddTurn();
@@ -73,12 +76,12 @@ public class GameManager : MonoBehaviour
 					// Try to drain mutant incubator
 					if (cellGrid.player.DrainIncubator())
 					{
-						Debug.Log("Drained incubator!!!!");
 						gameInfo.AddHeart();
 					}
 					// Try to take elevator
 					if (cellGrid.player.TakeElevator())
 					{
+						cellGrid.player.MakeMove();
 						NextLevel();
 						break;
 					}
@@ -121,11 +124,12 @@ public class GameManager : MonoBehaviour
 				Enemy.alreadyTargetedCells.Clear();
 				foreach (Enemy enemy in cellGrid.enemies)
 				{
-					enemy.FindNextMove(cellGrid.player.GetCurrentCell(), gameInfo.GetCurrentLevel() / GameParams.NUMBERS_OF_LEVELS);
+					enemy.FindNextMove(cellGrid.player.GetCurrentCell(), (float)gameInfo.GetCurrentLevel() / GameParams.NUMBERS_OF_LEVELS);
 				}
 				gameState = GameState.AnimateAndMoveEnemies;
 				break;
 			case GameState.AnimateAndMoveEnemies:
+				AnimateIdleEntities();
 				// Make the animation and make the move
 				bool finishedMoving = true;
 				foreach (Enemy enemy in cellGrid.enemies)
@@ -161,8 +165,8 @@ public class GameManager : MonoBehaviour
 	private void NextLevel()
 	{
 		gameInfo.NextLevel();
-		cellGrid.ResetGrid();
-		cellGrid.FillGrid(level: gameInfo.GetCurrentLevel());
+		cellGrid.ResetGrid(destroyPlayer: false);
+		cellGrid.FillGrid(level: gameInfo.GetCurrentLevel(), createPlayer: false);
 	}
 
 	/// <summary>
@@ -172,6 +176,7 @@ public class GameManager : MonoBehaviour
 	{
 		ResetGame();
 		menuCanvas.SetActive(false);
+		gameInfoCanvas.SetActive(true);
 		gameState = GameState.PlayerTurn;
 	}
 
@@ -257,6 +262,18 @@ public class GameManager : MonoBehaviour
 	/// </summary>
 	public void HandleClickOnFloor()
 	{
+		// If player can move to floor directly
+		if (cellGrid.player.GetMoveableCells().Contains(targetCell))
+		{
+			cellGrid.player.SetNextMoveCell(targetCell);
+			cellGrid.player.UpdateNextKills(targetCell);
+			// Focus new cell
+			focusedCell = null;
+			targetCell = null;
+			gameState = GameState.AnimateAndMovePlayer;
+			return;
+		}
+
 		// Click with focus NOT on Player
 		if (focusedCell == null || focusedCell.GetEntityType() != EntityType.Player)
 		{
@@ -320,24 +337,14 @@ public class GameManager : MonoBehaviour
 
 	private void HandleClickOnStructure()
 	{
-		Debug.Log("Click on structure");
-		// If cell was already focused, move to it
-		if (targetCell == focusedCell)
+		// If player can move to structue directly
+		if (cellGrid.player.GetMoveableCells().Contains(targetCell))
 		{
-			// Highlight path to target cell
-			List<Cell> path = CellGrid.FindPath(cellGrid.player.GetCurrentCell(), targetCell, true);
-			foreach (Cell cell in path)
-			{
-				// Light blue
-				cell.Highlight(Color.cyan);
-				cellGrid.highlightedPathCells.Add(cell);
-			}
-			// Add structure to path
-			targetCell.Highlight(Color.cyan);
-			cellGrid.highlightedPathCells.Add(targetCell);
+			cellGrid.player.SetNextMoveCell(targetCell);
 			// Focus new cell
-			focusedCell = targetCell;
+			focusedCell = null;
 			targetCell = null;
+			gameState = GameState.AnimateAndMovePlayer;
 			return;
 		}
 

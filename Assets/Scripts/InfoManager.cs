@@ -4,9 +4,10 @@ public class InfoManager : MonoBehaviour
 {
 	private GameInfo gameInfo;
 
-	[SerializeField] private TMPro.TextMeshProUGUI heartsText;
-
+	[SerializeField] private GameObject heartContainer;
 	[SerializeField] private GameObject headContainer;
+
+	[SerializeField] private GameObject heartPrefab;
 
 	public void Awake()
 	{
@@ -15,6 +16,7 @@ public class InfoManager : MonoBehaviour
 
 	public void OnEnable()
 	{
+		Debug.Log("Subscribe");
 		gameInfo.OnResetInfo += ResetInfo;
 		gameInfo.OnHeartChange += UpdateHearts;
 		gameInfo.OnEnemyKilled += UpdateKills;
@@ -31,14 +33,32 @@ public class InfoManager : MonoBehaviour
 
 	private void ResetInfo()
 	{
+		Debug.Log("ResetInfo");
 		UpdateHearts(GameParams.STARTING_PLAYER_HEARTS);
 		UpdateKills(null, 0);
 	}
 
 	private void UpdateHearts(int playerHearts)
 	{
-		playerHearts = Mathf.Max(0, playerHearts);
-		heartsText.text = "= " + playerHearts.ToString();
+		Debug.Log("PlayerHearts: " + playerHearts);
+		//playerHearts = Mathf.Max(0, playerHearts);
+		//heartsText.text = "= " + playerHearts.ToString();
+		if (playerHearts == 0)
+		{
+			foreach (Transform child in headContainer.transform)
+			{
+				Destroy(child.gameObject);
+			}
+			return;
+		}
+
+		Debug.Log("UpdateHearts");
+		for (int i = 0; i < playerHearts; i++)
+		{
+			GameObject heart = Instantiate(heartPrefab, Vector3.right * i * 40, Quaternion.identity);
+			heart.transform.SetParent(heartContainer.transform, false);
+			Debug.Log("Heart " + i);
+		}
 	}
 
 	private void UpdateKills(GameObject headPrefab, int nKills)

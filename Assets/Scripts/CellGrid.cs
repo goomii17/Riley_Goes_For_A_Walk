@@ -28,8 +28,8 @@ public class CellGrid : MonoBehaviour
 		DestroyChildren();
 		InitGrid();
 		SetNeighbors();
-		ResetGrid();
-		FillGrid();
+		//ResetGrid();
+		//FillGrid();
 	}
 
 	public static bool IsInGrid(int i, int j)
@@ -146,12 +146,20 @@ public class CellGrid : MonoBehaviour
 	/// <summary>
 	/// Procedurally generate levels.
 	/// </summary>
-	/// <param name="level"></param>
-	public void FillGrid(int level = 0)
+	public void FillGrid(int level = 0, bool createPlayer = true)
 	{
 		// Put player on the grid
 		Cell playerCell = grid[1, 4].GetComponent<Cell>();
-		PutEntityOnCell(playerCell, playerPrefab);
+		if (createPlayer)
+		{
+			PutEntityOnCell(playerCell, playerPrefab);
+		}
+		else
+		{
+			Cell prevPlayerCell = player.GetCurrentCell();
+			prevPlayerCell.UnSetEntity();
+			playerCell.SetEntity(player);
+		}
 		player = playerCell.entity as Player;
 
 		// Put elevator on the grid
@@ -287,7 +295,7 @@ public class CellGrid : MonoBehaviour
 	/// <summary>
 	/// Destroys all content and tiles of the grid if they exist.
 	/// </summary>
-	public void ResetGrid()
+	public void ResetGrid(bool destroyPlayer = true)
 	{
 		foreach (Transform child in transform)
 		{
@@ -295,10 +303,17 @@ public class CellGrid : MonoBehaviour
 
 			foreach (Transform grandChild in child)
 			{
+				if (grandChild.GetComponent<Player>() != null && !destroyPlayer)
+				{
+					continue;
+				}
 				Destroy(grandChild.gameObject);
 			}
 		}
-		player = null;
+		if (destroyPlayer)
+		{
+			player = null;
+		}
 		enemies.Clear();
 	}
 

@@ -33,6 +33,9 @@ public abstract class EntityAnimator : MonoBehaviour
 		{
 			spriteRenderer.flipX = !spriteRenderer.flipX;
 		}
+
+		// Sorting layer is int(y)
+		spriteRenderer.sortingOrder = (int)transform.position.y + 52;
 	}
 
 	public abstract void ResetMoveAnimation();

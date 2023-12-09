@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class Player : Entity
 {
@@ -134,14 +133,12 @@ public class Player : Entity
 
 	public bool DrainIncubator()
 	{
-		Debug.Log("DrainIncubator???");
 		if (nextMoveCell != null && nextMoveCell.GetStructureType() == StructureType.Incubator)
 		{
-			Debug.Log("YEEES");
 			Incubator incubator = (Incubator)nextMoveCell.structure;
 			if (incubator.IsFilled())
 			{
-				Debug.Log("IS FILLED");
+				animator.Evolve();
 				incubator.Drain();
 				return true;
 			}
@@ -174,5 +171,18 @@ public class Player : Entity
 	{
 		if (nextMoveCell == null) return true;
 		return animator.AnimateMove(nextMoveCell, killMeleeLeft, killMeleeRight, killFrontal);
+	}
+
+	public override void MakeMove()
+	{
+		if (nextMoveCell != null && nextMoveCell != currentCell)
+		{
+			currentCell.UnSetEntity();
+			nextMoveCell.SetEntity(this);
+		}
+		nextMoveCell = null;
+		killMeleeLeft = null;
+		killMeleeRight = null;
+		killFrontal = null;
 	}
 }

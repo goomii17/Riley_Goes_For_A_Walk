@@ -60,6 +60,18 @@ public abstract class Enemy : Entity
 		}
 	}
 
+
+	public override void MakeMove()
+	{
+		if (nextMoveCell != null && nextMoveCell != currentCell)
+		{
+			currentCell.UnSetEntity();
+			nextMoveCell.SetEntity(this);
+		}
+		nextMoveCell = null;
+	}
+
+
 	public override void AnimateIdle()
 	{
 		animator.AnimateIdle();

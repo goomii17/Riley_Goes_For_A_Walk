@@ -14,15 +14,16 @@ public static class GameParams
 	public const float ENTITY_3D_DEPTH = -3.8f; // Z of entity on cell
 
 	public const int STARTING_PLAYER_HEARTS = 3;    // Starting player hearts
-	public const int NUMBERS_OF_LEVELS = 5; // Number of levels in the game
+	public const int NUMBERS_OF_LEVELS = 6; // Number of levels in the game
 
 	// constant table mapping level to number of enemies of each type
-	public static readonly int[,] LEVEL_ENEMY_COUNT = new int[5, 3]
+	public static readonly int[,] LEVEL_ENEMY_COUNT = new int[6, 3]
 	{
 		{ 1, 1, 0 },
-		{ 3, 1, 0 },
+		{ 2, 1, 1 },
 		{ 3, 2, 1 },
-		{ 4, 3, 2 },
+		{ 3, 3, 2 },
+		{ 4, 3, 3 },
 		{ 5, 4, 3 }
 	};
 
