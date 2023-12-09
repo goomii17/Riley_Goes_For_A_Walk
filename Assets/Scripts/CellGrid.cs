@@ -49,6 +49,11 @@ public class CellGrid : MonoBehaviour
 		return cells;
 	}
 
+	public GameObject GetCell(int i, int j)
+	{
+		return grid[i, j];
+	}
+
 	public void UnHighLightAllCells()
 	{
 		foreach (Cell cell in highlightedPathCells)
@@ -254,9 +259,10 @@ public class CellGrid : MonoBehaviour
 		// Put enemies on the grid
 		for (int i = 0; i < 6; i++)
 		{
-			PutEntityOnCell(remainingCells[i], enemyPrefabs[0]);
+			PutEntityOnCell(remainingCells[i], enemyPrefabs[1]);
 			enemies.Add(remainingCells[i].entity as Enemy);
 		}
+
 
 		// Fill the grid with floor
 		for (int i = 0; i < GameParams.MATRIX_HEIGHT; i++)

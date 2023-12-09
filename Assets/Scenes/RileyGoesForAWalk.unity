@@ -907,6 +907,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 3922869632276136598, guid: 4dc46bb0daec2654aa3f3156e86ab77d, type: 3}
   enemyPrefabs:
   - {fileID: 8270151079411219810, guid: 054a1e2f499466b44ad38c6a571637da, type: 3}
+  - {fileID: 8270151079411219810, guid: 57bf05b054dccd5459797c96f88337ff, type: 3}
   player: {fileID: 0}
   enemies: []
   highlightedPathCells: []
