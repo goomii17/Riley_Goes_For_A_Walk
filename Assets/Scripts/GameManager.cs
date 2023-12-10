@@ -10,7 +10,8 @@ public enum GameState
 	EnemyTurn,
 	AnimateAndMoveEnemies,
 	TakeElevator,
-	GameOver
+	GameOver,
+	Victory
 }
 
 public class GameManager : MonoBehaviour
@@ -25,6 +26,7 @@ public class GameManager : MonoBehaviour
 	public GameObject menuCanvas;
 	public GameObject gameInfoCanvas;
 	public GameObject gameOverCanvas;
+	public GameObject victoryCanvas;
 
 	private GameState gameState;
 
@@ -179,11 +181,21 @@ public class GameManager : MonoBehaviour
 				AnimateIdleEntities();
 				if (cellGrid.elevator.FinishedOpening())
 				{
+					// If there are no more levels, victory
+					if (gameInfo.GetCurrentLevel() == GameParams.NUMBERS_OF_LEVELS)
+					{
+						soundtrack.Stop();
+						victoryCanvas.SetActive(true);
+						gameState = GameState.Victory;
+						break;
+					}
 					NextLevel();
 					gameState = GameState.PlayerTurn;
 				}
 				break;
 			case GameState.GameOver:
+				break;
+			case GameState.Victory:
 				break;
 		}
 	}
