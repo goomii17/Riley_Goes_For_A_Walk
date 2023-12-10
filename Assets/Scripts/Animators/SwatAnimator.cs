@@ -86,7 +86,6 @@ public class SwatAnimator : EntityAnimator
 	public void ResetAttackAnimation()
 	{
 		impactAnimationTimer = 0f;
-		attackAnimationTimer = 0f;
 		attackAnimationState = 0;
 	}
 
