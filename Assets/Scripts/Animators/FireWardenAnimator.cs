@@ -46,10 +46,6 @@ public class FireWardenAnimator : EnemyAnimator
 				fire = Instantiate(firePrefab, Vector3.zero, Quaternion.identity);
 				fire.transform.SetParent(transform, false);
 				fire.GetComponent<SpriteRenderer>().sortingOrder = 250 - (int)transform.position.y + 1;
-				// rotate fire to player
-				Vector3 direction = playerCell.GetEntityPosition() - startPosition;
-				float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-				fire.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
 				// Play fire shot audio
 				AudioSource.PlayClipAtPoint(fireAudio, Camera.main.transform.position);
