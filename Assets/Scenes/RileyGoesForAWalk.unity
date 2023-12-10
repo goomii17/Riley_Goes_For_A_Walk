@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.002766836, g: 0.015741978, b: 0.10812052, a: 1}
+  m_IndirectSpecularColor: {r: 0.0028079185, g: 0.015834514, b: 0.108687006, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2260,6 +2260,7 @@ MonoBehaviour:
   gameInfoCanvas: {fileID: 499912816}
   gameOverCanvas: {fileID: 1328867791}
   victoryCanvas: {fileID: 1314219784}
+  skyParalax: {fileID: 1651567727}
   audioSource: {fileID: 1980563713}
   menuMusic: {fileID: 8300000, guid: 2a4116f94ca2b5d4e8c901563bb82d08, type: 3}
   gameMusic: {fileID: 8300000, guid: 688654b2f513c5c469d2e26efa09416a, type: 3}
