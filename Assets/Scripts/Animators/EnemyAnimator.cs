@@ -6,6 +6,8 @@ public abstract class EnemyAnimator : EntityAnimator
 	private const float WALK_ANIMATION_TIME = 0.35f;
 	private float walkAnimationTimer = 0f;
 	private int walkAnimationState = 0; // 0 - init, 1 animate walk to next cell, 2 finished
+	[SerializeField] AudioClip footSteps;
+
 
 	private Vector3 startWalkPosition;
 
@@ -22,6 +24,7 @@ public abstract class EnemyAnimator : EntityAnimator
 		{
 			return true;
 		}
+		//AudioSource.PlayClipAtPoint(footSteps, Camera.main.transform.position, 0.5f);
 		return AnimateWalk(targetCell.GetEntityPosition());
 	}
 
@@ -52,4 +55,5 @@ public abstract class EnemyAnimator : EntityAnimator
 	}
 
 	public abstract void ResetAttackAnimation();
+	public abstract bool AnimateAttack(Cell playerCell);
 }

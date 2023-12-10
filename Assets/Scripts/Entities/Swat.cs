@@ -76,18 +76,14 @@ public class Swat : Enemy
 		for (int i = 0; i < 6; i++)
 		{
 			Cell cell = currentCell.neighbors[i];
-			if (cell == null)
+			if (cell == null || cell.GetStructureType() != StructureType.None || cell.GetEntityType() == EntityType.Enemy)
 			{
 				continue;
 			}
 			for (int j = 0; j < 5; j++)
 			{
 				cell = cell.neighbors[i];
-				if (cell == null)
-				{
-					break;
-				}
-				if (cell.GetEntityType() == EntityType.Enemy)
+				if (cell == null || cell.GetStructureType() != StructureType.None || cell.GetEntityType() == EntityType.Enemy)
 				{
 					break;
 				}
@@ -100,11 +96,11 @@ public class Swat : Enemy
 
 	public override bool AnimateAttack()
 	{
-		return (animator as SwatAnimator).AnimateAttack(NextAttackCell);
+		return animator.AnimateAttack(NextAttackCell);
 	}
 
 	public override void ResetAttackAnimation()
 	{
-		(animator as SwatAnimator).ResetAttackAnimation();
+		animator.ResetAttackAnimation();
 	}
 }

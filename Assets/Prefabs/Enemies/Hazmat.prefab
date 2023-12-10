@@ -114,3 +114,5 @@ MonoBehaviour:
   IdleSprites:
   - {fileID: 21300000, guid: 7fc61b0bd06e2ba42913856e400e1d26, type: 3}
   - {fileID: 21300000, guid: 4b1d8eb085fd99b4c924641cfbe93799, type: 3}
+  footSteps: {fileID: 8300000, guid: a5f54f935d093a3438d6ed8959117ea5, type: 3}
+  audioHit: {fileID: 8300000, guid: d93db2025106df44f9e79a1268ab3e3e, type: 3}

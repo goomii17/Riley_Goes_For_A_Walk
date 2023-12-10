@@ -97,11 +97,11 @@ public class Hazmat : Enemy
 
 	public override bool AnimateAttack()
 	{
-		return (animator as HazmatAnimator).AnimateAttack(NextAttackCell);
+		return animator.AnimateAttack(NextAttackCell);
 	}
 
 	public override void ResetAttackAnimation()
 	{
-		(animator as HazmatAnimator).ResetAttackAnimation();
+		animator.ResetAttackAnimation();
 	}
 }

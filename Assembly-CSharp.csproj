@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\Entities\Entity.cs" />
     <Compile Include="Assets\Scripts\Structures\Incubator.cs" />
     <Compile Include="Assets\Scripts\GameInfo.cs" />
+    <Compile Include="Assets\Scripts\Animators\SwatAnimator.cs" />
     <Compile Include="Assets\Scripts\Tiles\LabFloor.cs" />
     <Compile Include="Assets\Scripts\Tiles\Tile.cs" />
     <Compile Include="Assets\Scripts\Animators\PlayerAnimator.cs" />

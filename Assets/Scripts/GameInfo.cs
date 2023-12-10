@@ -22,8 +22,7 @@ public class GameInfo : MonoBehaviour
 		enemyKills = 0;
 		rileyEvolution = 0;
 		currentScore = 0;
-		Debug.Log("ResetGameInfo");
-		OnResetInfo();
+		OnResetInfo?.Invoke();
 	}
 
 	public void NextLevel()

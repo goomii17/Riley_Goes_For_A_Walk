@@ -2,6 +2,9 @@
 
 public class HazmatAnimator : EnemyAnimator
 {
+	// AudioHit
+	[SerializeField] AudioClip audioHit = null;
+
 	// Attack animation
 	private const float ATTACK_ANIMATION_TIME = 0.35f;
 	private const float ATTACK_INTRUSION_PERCENTAGE = 0.6f;
@@ -21,7 +24,7 @@ public class HazmatAnimator : EnemyAnimator
 		attackAnimationState = 0;
 	}
 
-	public bool AnimateAttack(Cell playerCell)
+	public override bool AnimateAttack(Cell playerCell)
 	{
 		if (playerCell == null)
 		{
@@ -43,6 +46,7 @@ public class HazmatAnimator : EnemyAnimator
 				if (attackAnimationTimer > ATTACK_ANIMATION_TIME / 2)
 				{
 					playerCell.entity.GetComponent<SpriteRenderer>().color = Color.red;
+					AudioSource.PlayClipAtPoint(audioHit, Camera.main.transform.position);
 					attackAnimationState = 2;
 				}
 

@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   openSprite: {fileID: 21300000, guid: acc9530fd64645742a9ab0b52cd37abd, type: 3}
   closedSprite: {fileID: 21300000, guid: aaee8fd61654be74492ec4638d99f96e, type: 3}
+  openSound: {fileID: 8300000, guid: ed52a93e2ffaf1747910cf7868f977ee, type: 3}
 --- !u!212 &-242289900498571027
 SpriteRenderer:
   m_ObjectHideFlags: 0

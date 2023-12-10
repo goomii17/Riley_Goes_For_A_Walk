@@ -3,9 +3,9 @@ using UnityEngine;
 
 public enum EntityType
 {
+	None,
 	Player,
 	Enemy,
-	None
 }
 
 public abstract class Entity : MonoBehaviour

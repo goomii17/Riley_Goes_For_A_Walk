@@ -2,9 +2,9 @@ using UnityEngine;
 
 public enum StructureType
 {
+	None,
 	Elevator,
 	Incubator,
-	None
 }
 
 public class Structure : MonoBehaviour
@@ -18,6 +18,7 @@ public class Structure : MonoBehaviour
 		Vector3 startPosition = Vector3.up * 10f - Vector3.forward * 3.8f;
 		Quaternion startRotation = Quaternion.Euler(-20f, 0, 0);
 		transform.SetLocalPositionAndRotation(startPosition, startRotation);
+		spriteRenderer.sortingOrder = 250 - (int)transform.position.y - 1;
 	}
 
 	public void SetParentCell(Cell cell)

@@ -16,7 +16,6 @@ public class InfoManager : MonoBehaviour
 
 	public void OnEnable()
 	{
-		Debug.Log("Subscribe");
 		gameInfo.OnResetInfo += ResetInfo;
 		gameInfo.OnHeartChange += UpdateHearts;
 		gameInfo.OnEnemyKilled += UpdateKills;
@@ -33,31 +32,21 @@ public class InfoManager : MonoBehaviour
 
 	private void ResetInfo()
 	{
-		Debug.Log("ResetInfo");
 		UpdateHearts(GameParams.STARTING_PLAYER_HEARTS);
 		UpdateKills(null, 0);
 	}
 
 	private void UpdateHearts(int playerHearts)
 	{
-		Debug.Log("PlayerHearts: " + playerHearts);
-		//playerHearts = Mathf.Max(0, playerHearts);
-		//heartsText.text = "= " + playerHearts.ToString();
-		if (playerHearts == 0)
+		foreach (Transform child in heartContainer.transform)
 		{
-			foreach (Transform child in headContainer.transform)
-			{
-				Destroy(child.gameObject);
-			}
-			return;
+			Destroy(child.gameObject);
 		}
 
-		Debug.Log("UpdateHearts");
 		for (int i = 0; i < playerHearts; i++)
 		{
 			GameObject heart = Instantiate(heartPrefab, Vector3.right * i * 40, Quaternion.identity);
 			heart.transform.SetParent(heartContainer.transform, false);
-			Debug.Log("Heart " + i);
 		}
 	}
 
@@ -71,7 +60,13 @@ public class InfoManager : MonoBehaviour
 			}
 			return;
 		}
-		GameObject head = Instantiate(headPrefab, Vector3.right * (nKills - 1) * 12, Quaternion.identity);
+
+		int MAX_HEADS = 8;
+		int SEPARATION = 15;
+		int HEIGHT = 35;
+		int x = ((nKills - 1) % MAX_HEADS) * SEPARATION;
+		int y = ((nKills - 1) / MAX_HEADS) * HEIGHT;
+		GameObject head = Instantiate(headPrefab, new Vector3(x, -y, 0), Quaternion.identity);
 		head.transform.SetParent(headContainer.transform, false);
 	}
 

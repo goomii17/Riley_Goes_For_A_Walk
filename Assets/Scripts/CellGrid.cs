@@ -17,6 +17,7 @@ public class CellGrid : MonoBehaviour
 
 	// Player and enemies
 	public Player player;
+	public Elevator elevator;
 	public List<Enemy> enemies = new List<Enemy>();
 
 	// Highlighted cells
@@ -165,6 +166,7 @@ public class CellGrid : MonoBehaviour
 		// Put elevator on the grid
 		Cell elevatorCell = grid[9, 4].GetComponent<Cell>();
 		PutStructureOnCell(elevatorCell, elevatorPrefab);
+		elevator = elevatorCell.structure as Elevator;
 
 		// List of banned cells for placing enemies and voids
 		List<Cell> protectedCells = new List<Cell>(){

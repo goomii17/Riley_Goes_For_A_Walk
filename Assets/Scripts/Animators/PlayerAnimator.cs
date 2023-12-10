@@ -9,12 +9,14 @@ public class PlayerAnimator : EntityAnimator
 	private const float WALK_ANIMATION_TIME = 0.35f;
 	private float walkAnimationTimer = 0f;
 	private int walkAnimationState = 0; // 0 - init, 1 animate walk to next cell, 2 finished
+	[SerializeField] AudioClip footStep;
 
 	// Attack animation
 	private const float ATTACK_ANIMATION_TIME = 0.3f;
 	private const float ATTACK_INTRUSION_PERCENTAGE = 0.65f;
 	private float attackAnimationTimer = 0f;
 	private int attackAnimationState = 0; // 0 - init, 1 going forward, 2 backwards, 3 finished
+	[SerializeField] AudioClip audioKill = null;
 
 	// Common
 	private Vector3 startPosition;
@@ -22,6 +24,7 @@ public class PlayerAnimator : EntityAnimator
 	// Evolution
 	[SerializeField] private Sprite[] evolutions = null;
 	[SerializeField] private Sprite[] evolutions_idle = null;
+	[SerializeField] private AudioClip audioEvolve = null;
 	private int evolutionState = 0;
 
 
@@ -95,6 +98,7 @@ public class PlayerAnimator : EntityAnimator
 		switch (walkAnimationState)
 		{
 			case 0:
+				AudioSource.PlayClipAtPoint(footStep, Camera.main.transform.position, 0.5f);
 				walkAnimationState = 1;
 				return false;
 			case 1:
@@ -106,6 +110,12 @@ public class PlayerAnimator : EntityAnimator
 				if (walkAnimationTimer > WALK_ANIMATION_TIME)
 				{
 					walkAnimationState = 2;
+				}
+
+				// If time is greater than audio clip length, play another one
+				if (walkAnimationTimer > footStep.length)
+				{
+					AudioSource.PlayClipAtPoint(footStep, Camera.main.transform.position, 0.5f);
 				}
 
 				return false;
@@ -142,6 +152,7 @@ public class PlayerAnimator : EntityAnimator
 
 				if (attackAnimationTimer > ATTACK_ANIMATION_TIME / 2)
 				{
+					AudioSource.PlayClipAtPoint(audioKill, Camera.main.transform.position);
 					enemyCell.entity.GetComponent<SpriteRenderer>().color = Color.magenta;
 					attackAnimationState = 2;
 				}
@@ -174,6 +185,9 @@ public class PlayerAnimator : EntityAnimator
 			Debug.Log("Evolution state is already maxed out!");
 			return;
 		}
+
+		AudioSource.PlayClipAtPoint(audioEvolve, Camera.main.transform.position);
+
 		IdleSprites = new Sprite[2];
 		IdleSprites[0] = evolutions[evolutionState];
 		IdleSprites[1] = evolutions_idle[evolutionState];

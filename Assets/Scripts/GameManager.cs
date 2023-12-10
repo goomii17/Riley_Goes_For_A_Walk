@@ -9,17 +9,22 @@ public enum GameState
 	AnimateEnemyAttacks,
 	EnemyTurn,
 	AnimateAndMoveEnemies,
+	TakeElevator,
 	GameOver
 }
 
 public class GameManager : MonoBehaviour
 {
+	// Sound player
+	[SerializeField] private AudioSource soundtrack;
+
 	// Singleton
 	public static GameManager Instance { get; private set; }
 
 	// Menu canvas
 	public GameObject menuCanvas;
 	public GameObject gameInfoCanvas;
+	public GameObject gameOverCanvas;
 
 	private GameState gameState;
 
@@ -65,6 +70,7 @@ public class GameManager : MonoBehaviour
 				{
 					gameInfo.AddTurn();
 					cellGrid.player.ResetMoveAnimation();
+
 					// kill enemies
 					foreach (Cell killedEnemyCell in cellGrid.player.GetNextKillsCells())
 					{
@@ -73,24 +79,39 @@ public class GameManager : MonoBehaviour
 						killedEnemyCell.KillEntity();
 						gameInfo.AddKill(killedEnemy.headPrefab);
 					}
+
 					// Try to drain mutant incubator
 					if (cellGrid.player.DrainIncubator())
 					{
 						gameInfo.AddHeart();
 					}
+
 					// Try to take elevator
 					if (cellGrid.player.TakeElevator())
 					{
 						cellGrid.player.MakeMove();
-						NextLevel();
+						gameState = GameState.TakeElevator;
 						break;
 					}
+
+					// If player cannot move, game over
+					if (cellGrid.player.GetNextMoveCell() == null)
+					{
+						soundtrack.Stop();
+						gameOverCanvas.SetActive(true);
+						gameState = GameState.GameOver;
+						break;
+					}
+
 					// Make move
 					cellGrid.player.MakeMove();
+
+					// Enemies calculate next move
 					foreach (Enemy enemy in cellGrid.enemies)
 					{
 						enemy.UpdateNextAttack();
 					}
+
 					gameState = GameState.AnimateEnemyAttacks;
 				}
 				break;
@@ -116,11 +137,18 @@ public class GameManager : MonoBehaviour
 						}
 					}
 
-					gameState = gameInfo.IsPlayerDead() ? GameState.GameOver : GameState.EnemyTurn;
+					if (gameInfo.IsPlayerDead())
+					{
+						soundtrack.Stop();
+						gameOverCanvas.SetActive(true);
+						gameState = GameState.GameOver;
+						break;
+					}
+
+					gameState = GameState.EnemyTurn;
 				}
 				break;
 			case GameState.EnemyTurn:
-				// Add a Delay
 				Enemy.alreadyTargetedCells.Clear();
 				foreach (Enemy enemy in cellGrid.enemies)
 				{
@@ -147,10 +175,15 @@ public class GameManager : MonoBehaviour
 					gameState = GameState.PlayerTurn;
 				}
 				break;
+			case GameState.TakeElevator:
+				AnimateIdleEntities();
+				if (cellGrid.elevator.FinishedOpening())
+				{
+					NextLevel();
+					gameState = GameState.PlayerTurn;
+				}
+				break;
 			case GameState.GameOver:
-				// Show gameover canvas with score and play again
-				menuCanvas.SetActive(true);
-				gameState = GameState.Menu;
 				break;
 		}
 	}
@@ -174,9 +207,14 @@ public class GameManager : MonoBehaviour
 	/// </summary>
 	public void OnPlayButtonClicked()
 	{
-		ResetGame();
 		menuCanvas.SetActive(false);
+		gameOverCanvas.SetActive(false);
 		gameInfoCanvas.SetActive(true);
+		ResetGame();
+
+		// Play soundtrack
+		soundtrack.Play();
+
 		gameState = GameState.PlayerTurn;
 	}
 

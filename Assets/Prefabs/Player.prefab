@@ -113,6 +113,8 @@ MonoBehaviour:
   IdleSprites:
   - {fileID: 21300000, guid: e3d98b71c6b057a4cb7a25cf7567570f, type: 3}
   - {fileID: 21300000, guid: 6da4221842f1a214c984690769c33fd1, type: 3}
+  footStep: {fileID: 8300000, guid: 70bd7d4fd06a83f4a80adcf31554f952, type: 3}
+  audioKill: {fileID: 8300000, guid: 328557e20e2b8c049bad36f2d3338597, type: 3}
   evolutions:
   - {fileID: 21300000, guid: badeaa107e25ff64790f288c15e8ddda, type: 3}
   - {fileID: 21300000, guid: b01656bc3cd7b684bbbc41b414ccdc71, type: 3}
@@ -125,3 +127,4 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 730ee2e54a7b8f34a95b976d01a80a4c, type: 3}
   - {fileID: 21300000, guid: 799d8792aa304b84e8554ae20c497f12, type: 3}
   - {fileID: 21300000, guid: d5140ba5beca9cc4e8390e2de651dcd4, type: 3}
+  audioEvolve: {fileID: 8300000, guid: 2226f4c443ee17e4fa54336321ecb803, type: 3}

@@ -2,9 +2,9 @@ using UnityEngine;
 
 public enum TileType
 {
+	None,
 	Floor,
 	Void,
-	None
 }
 
 public abstract class Tile : MonoBehaviour
