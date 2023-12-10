@@ -13,7 +13,7 @@ public static class GameParams
 	public const float ENTITY_3D_HEIGHT = 4.6f; // Y of entity on cell
 	public const float ENTITY_3D_DEPTH = -3.8f; // Z of entity on cell
 
-	public const int STARTING_PLAYER_HEARTS = 8;    // Starting player hearts
+	public const int STARTING_PLAYER_HEARTS = 3;    // Starting player hearts
 	public const int NUMBERS_OF_LEVELS = 5; // Number of levels in the game
 
 	// constant table mapping level to number of enemies of each type

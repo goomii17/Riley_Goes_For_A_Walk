@@ -148,8 +148,8 @@ public class GameManager : MonoBehaviour
 					{
 						if (enemy.AttackPlayer())
 						{
-							//gameInfo.TakeDamage();
-							gameInfo.AddHeart();
+							gameInfo.TakeDamage();
+							//gameInfo.AddHeart();
 						}
 					}
 
@@ -462,6 +462,11 @@ public class GameManager : MonoBehaviour
 				cell.entity.AnimateIdle();
 			}
 		}
+	}
+
+	public void DoExitGame()
+	{
+		Application.Quit();
 	}
 
 }
