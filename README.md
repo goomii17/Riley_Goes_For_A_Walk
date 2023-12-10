@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="readme_data/RILEY_upscaled.png" alt="Riley" />
+  <img src="Assets/Sprites/RILEY_upscaled.png" alt="Riley" />
 </p>
 
 # Game Description
