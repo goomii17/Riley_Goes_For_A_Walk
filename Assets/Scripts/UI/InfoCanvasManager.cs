@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class InfoManager : MonoBehaviour
+public class InfoCanvasManager : MonoBehaviour
 {
 	private GameInfo gameInfo;
 
@@ -45,7 +45,7 @@ public class InfoManager : MonoBehaviour
 
 		for (int i = 0; i < playerHearts; i++)
 		{
-			GameObject heart = Instantiate(heartPrefab, Vector3.right * i * 40, Quaternion.identity);
+			GameObject heart = Instantiate(heartPrefab, Vector3.right * i * 30, Quaternion.identity);
 			heart.transform.SetParent(heartContainer.transform, false);
 		}
 	}
@@ -63,7 +63,7 @@ public class InfoManager : MonoBehaviour
 
 		int MAX_HEADS = 8;
 		int SEPARATION = 15;
-		int HEIGHT = 35;
+		int HEIGHT = 30;
 		int x = ((nKills - 1) % MAX_HEADS) * SEPARATION;
 		int y = ((nKills - 1) / MAX_HEADS) * HEIGHT;
 		GameObject head = Instantiate(headPrefab, new Vector3(x, -y, 0), Quaternion.identity);

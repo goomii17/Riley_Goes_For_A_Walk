@@ -16,17 +16,19 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
-	// Sound player
-	[SerializeField] private AudioSource soundtrack;
-
 	// Singleton
 	public static GameManager Instance { get; private set; }
 
-	// Menu canvas
+	// Canvases
 	public GameObject menuCanvas;
 	public GameObject gameInfoCanvas;
 	public GameObject gameOverCanvas;
 	public GameObject victoryCanvas;
+
+	// Sound player
+	[SerializeField] private AudioSource audioSource;
+	[SerializeField] private AudioClip menuMusic;
+	[SerializeField] private AudioClip gameMusic;
 
 	private GameState gameState;
 
@@ -51,6 +53,13 @@ public class GameManager : MonoBehaviour
 
 		menuCanvas.SetActive(true);
 		gameInfoCanvas.SetActive(false);
+		gameOverCanvas.SetActive(false);
+		victoryCanvas.SetActive(false);
+
+		audioSource.clip = menuMusic;
+		audioSource.loop = true;
+		audioSource.Play();
+
 		gameState = GameState.Menu;
 	}
 
@@ -99,8 +108,10 @@ public class GameManager : MonoBehaviour
 					// If player cannot move, game over
 					if (cellGrid.player.GetNextMoveCell() == null)
 					{
-						soundtrack.Stop();
 						gameOverCanvas.SetActive(true);
+						audioSource.clip = menuMusic;
+						audioSource.loop = true;
+						audioSource.Play();
 						gameState = GameState.GameOver;
 						break;
 					}
@@ -118,6 +129,7 @@ public class GameManager : MonoBehaviour
 				}
 				break;
 			case GameState.AnimateEnemyAttacks:
+				// Animate all enemies
 				bool finishedAll = true;
 				foreach (Enemy enemy in cellGrid.enemies)
 				{
@@ -131,18 +143,22 @@ public class GameManager : MonoBehaviour
 						enemy.ResetAttackAnimation();
 					}
 
+					// Attack player
 					foreach (Enemy enemy in cellGrid.enemies)
 					{
 						if (enemy.AttackPlayer())
 						{
-							gameInfo.TakeDamage();
+							//gameInfo.TakeDamage();
+							gameInfo.AddHeart();
 						}
 					}
 
 					if (gameInfo.IsPlayerDead())
 					{
-						soundtrack.Stop();
 						gameOverCanvas.SetActive(true);
+						audioSource.clip = menuMusic;
+						audioSource.loop = true;
+						audioSource.Play();
 						gameState = GameState.GameOver;
 						break;
 					}
@@ -151,6 +167,7 @@ public class GameManager : MonoBehaviour
 				}
 				break;
 			case GameState.EnemyTurn:
+				// Calculate next move of enemies
 				Enemy.alreadyTargetedCells.Clear();
 				foreach (Enemy enemy in cellGrid.enemies)
 				{
@@ -160,7 +177,7 @@ public class GameManager : MonoBehaviour
 				break;
 			case GameState.AnimateAndMoveEnemies:
 				AnimateIdleEntities();
-				// Make the animation and make the move
+				// Animate all enemies
 				bool finishedMoving = true;
 				foreach (Enemy enemy in cellGrid.enemies)
 				{
@@ -169,6 +186,7 @@ public class GameManager : MonoBehaviour
 				}
 				if (finishedMoving)
 				{
+					// Make move
 					foreach (Enemy enemy in cellGrid.enemies)
 					{
 						enemy.ResetMoveAnimation();
@@ -182,9 +200,12 @@ public class GameManager : MonoBehaviour
 				if (cellGrid.elevator.FinishedOpening())
 				{
 					// If there are no more levels, victory
-					if (gameInfo.GetCurrentLevel() == GameParams.NUMBERS_OF_LEVELS)
+					if (gameInfo.GetCurrentLevel() + 1 >= GameParams.NUMBERS_OF_LEVELS)
 					{
-						soundtrack.Stop();
+						audioSource.clip = menuMusic;
+						audioSource.loop = true;
+						audioSource.Play();
+						gameInfoCanvas.SetActive(false);
 						victoryCanvas.SetActive(true);
 						gameState = GameState.Victory;
 						break;
@@ -204,7 +225,7 @@ public class GameManager : MonoBehaviour
 	{
 		gameInfo.ResetGameInfo();
 		cellGrid.ResetGrid();
-		cellGrid.FillGrid(level: 1);
+		cellGrid.FillGrid(level: 0);
 	}
 
 	private void NextLevel()
@@ -214,18 +235,18 @@ public class GameManager : MonoBehaviour
 		cellGrid.FillGrid(level: gameInfo.GetCurrentLevel(), createPlayer: false);
 	}
 
-	/// <summary>
-	/// Menu -> PlayerTurn
-	/// </summary>
 	public void OnPlayButtonClicked()
 	{
 		menuCanvas.SetActive(false);
 		gameOverCanvas.SetActive(false);
+		victoryCanvas.SetActive(false);
 		gameInfoCanvas.SetActive(true);
 		ResetGame();
 
 		// Play soundtrack
-		soundtrack.Play();
+		audioSource.clip = gameMusic;
+		audioSource.loop = true;
+		audioSource.Play();
 
 		gameState = GameState.PlayerTurn;
 	}
@@ -307,17 +328,13 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	/// <summary>
-	/// May exit PlayerTurn GameState if player makes a valid move
-	/// </summary>
 	public void HandleClickOnFloor()
 	{
-		// If player can move to floor directly
+		// If player can move to floor directly, move it
 		if (cellGrid.player.GetMoveableCells().Contains(targetCell))
 		{
 			cellGrid.player.SetNextMoveCell(targetCell);
 			cellGrid.player.UpdateNextKills(targetCell);
-			// Focus new cell
 			focusedCell = null;
 			targetCell = null;
 			gameState = GameState.AnimateAndMovePlayer;
@@ -345,8 +362,7 @@ public class GameManager : MonoBehaviour
 			Player player = (Player)focusedCell.entity;
 
 			// Make move if valid and exit PlayerTurn
-			bool validMove = player.GetMoveableCells().Contains(targetCell);
-			if (validMove)
+			if (player.GetMoveableCells().Contains(targetCell))
 			{
 				player.SetNextMoveCell(targetCell);
 				player.UpdateNextKills(targetCell);

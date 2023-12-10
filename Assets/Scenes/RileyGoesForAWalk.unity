@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0027859358, g: 0.015879912, b: 0.108779244, a: 1}
+  m_IndirectSpecularColor: {r: 0.0027100332, g: 0.015470306, b: 0.10638926, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -547,7 +547,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 499912816}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7282a76b76a82e344862b3afea633c75, type: 3}
+  m_Script: {fileID: 11500000, guid: b1638b9e35ce28b458208efb9cea73f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   heartContainer: {fileID: 725446864}
@@ -601,8 +601,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -3.9499512, y: -1.25}
-  m_SizeDelta: {x: 21.7001, y: 9.300021}
+  m_AnchoredPosition: {x: 0.63653564, y: -1.25}
+  m_SizeDelta: {x: 342.7471, y: 9.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &509961570
 MonoBehaviour:
@@ -1931,7 +1931,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1651567727}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c951e2f13a1ec54bb20cf560dbabdb3, type: 3}
+  m_Script: {fileID: 11500000, guid: e25887ca29be65c4bac5b067524ffa26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &1651567729
@@ -1943,7 +1943,7 @@ Transform:
   m_GameObject: {fileID: 1651567727}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 165.44261, y: 228.44705, z: 35.13215}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2124,11 +2124,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff2ed8381016c344ab9dbd8974b82759, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soundtrack: {fileID: 1980563713}
   menuCanvas: {fileID: 181402076}
   gameInfoCanvas: {fileID: 499912816}
   gameOverCanvas: {fileID: 1328867791}
-  victoryCanvas: {fileID: 0}
+  victoryCanvas: {fileID: 1314219784}
+  audioSource: {fileID: 1980563713}
+  menuMusic: {fileID: 8300000, guid: 2a4116f94ca2b5d4e8c901563bb82d08, type: 3}
+  gameMusic: {fileID: 8300000, guid: 688654b2f513c5c469d2e26efa09416a, type: 3}
   gameInfo: {fileID: 499912822}
   cellGrid: {fileID: 1474515949}
 --- !u!4 &1980563712
@@ -2156,7 +2158,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 688654b2f513c5c469d2e26efa09416a, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

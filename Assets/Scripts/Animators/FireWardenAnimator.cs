@@ -12,7 +12,6 @@ public class FireWardenAnimator : EnemyAnimator
 	private const float IMPACT_ANIMATION_TIME = 0.35f;
 	private const float FIRE_SPEED = 100f;
 	private float impactAnimationTimer = 0f;
-	private Vector3 startPosition;
 	GameObject fire;
 	private int attackAnimationState = 0; // 0 - off, 1 going forward, 2 backwards, 3 finished
 

@@ -80,7 +80,7 @@ public class Swat : Enemy
 			{
 				continue;
 			}
-			for (int j = 0; j < 5; j++)
+			for (int j = 0; j < 4; j++)
 			{
 				cell = cell.neighbors[i];
 				if (cell == null || cell.GetStructureType() != StructureType.None || cell.GetEntityType() == EntityType.Enemy)

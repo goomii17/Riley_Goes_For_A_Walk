@@ -32,7 +32,7 @@ public class Elevator : Structure
 	{
 		// Save time in which elevator was opened
 		timeOpened = Time.time;
-		AudioSource.PlayClipAtPoint(openSound, Camera.main.transform.position);
+		AudioSource.PlayClipAtPoint(openSound, Camera.main.transform.position, 0.8f);
 		spriteRenderer.sprite = openSprite;
 	}
 

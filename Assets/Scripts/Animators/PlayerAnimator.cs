@@ -186,12 +186,13 @@ public class PlayerAnimator : EntityAnimator
 			return;
 		}
 
-		AudioSource.PlayClipAtPoint(audioEvolve, Camera.main.transform.position);
+		AudioSource.PlayClipAtPoint(audioEvolve, Camera.main.transform.position, 0.8f);
 
 		IdleSprites = new Sprite[2];
 		IdleSprites[0] = evolutions[evolutionState];
 		IdleSprites[1] = evolutions_idle[evolutionState];
 		spriteRenderer.sprite = IdleSprites[0];
+
 		evolutionState++;
 	}
 

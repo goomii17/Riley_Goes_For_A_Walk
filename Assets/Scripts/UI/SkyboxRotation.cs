@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SkyboxManager : MonoBehaviour
 {
-	const float rotationSpeed = 0.1f;
+	const float rotationSpeed = 0.15f;
 
 	void Update()
 	{
