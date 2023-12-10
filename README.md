@@ -4,7 +4,7 @@
 
 # Game Description
 
-Hexagonal-grid turn-based strategy game created in Unity by **Sergio Herreros Pérez** and **José Ridruejo Tuñón**. It is inspired by [Hoplite](https://play.google.com/store/apps/details?id=com.magmafortress.hoplite&pcampaignid=web_share). The game features original sprites and soundtrack.
+Hexagonal-grid turn-based strategy game created in Unity by **Sergio Herreros Pérez** and **José Ridruejo Tuñón**. It is inspired by [Hoplite](https://play.google.com/store/apps/details?id=com.magmafortress.hoplite&pcampaignid=web_share). The game features original lore, sprites and soundtrack.
 
 # Game Rules
 
