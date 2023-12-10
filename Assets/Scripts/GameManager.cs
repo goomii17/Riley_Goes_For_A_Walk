@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
 	public GameObject gameOverCanvas;
 	public GameObject victoryCanvas;
 
+	public GameObject skyParalax;
+
 	// Sound player
 	[SerializeField] private AudioSource audioSource;
 	[SerializeField] private AudioClip menuMusic;
@@ -55,6 +57,7 @@ public class GameManager : MonoBehaviour
 		gameInfoCanvas.SetActive(false);
 		gameOverCanvas.SetActive(false);
 		victoryCanvas.SetActive(false);
+		skyParalax.SetActive(true);
 
 		audioSource.clip = menuMusic;
 		audioSource.loop = true;
@@ -108,6 +111,9 @@ public class GameManager : MonoBehaviour
 					// If player cannot move, game over
 					if (cellGrid.player.GetNextMoveCell() == null)
 					{
+						// skybox rotation = 0 and disable paralax
+						RenderSettings.skybox.SetFloat("_Rotation", 0);
+						skyParalax.SetActive(false);
 						gameOverCanvas.SetActive(true);
 						audioSource.clip = menuMusic;
 						audioSource.loop = true;
@@ -155,6 +161,9 @@ public class GameManager : MonoBehaviour
 
 					if (gameInfo.IsPlayerDead())
 					{
+						// skybox rotation = 0 and disable paralax
+						RenderSettings.skybox.SetFloat("_Rotation", 0);
+						skyParalax.SetActive(false);
 						gameOverCanvas.SetActive(true);
 						audioSource.clip = menuMusic;
 						audioSource.loop = true;
@@ -206,6 +215,9 @@ public class GameManager : MonoBehaviour
 						audioSource.loop = true;
 						audioSource.Play();
 						gameInfoCanvas.SetActive(false);
+						// skybox rotation = 0 and disable paralax
+						RenderSettings.skybox.SetFloat("_Rotation", 0);
+						skyParalax.SetActive(false);
 						victoryCanvas.SetActive(true);
 						gameState = GameState.Victory;
 						break;
@@ -241,6 +253,7 @@ public class GameManager : MonoBehaviour
 		gameOverCanvas.SetActive(false);
 		victoryCanvas.SetActive(false);
 		gameInfoCanvas.SetActive(true);
+		skyParalax.SetActive(true);
 		ResetGame();
 
 		// Play soundtrack
